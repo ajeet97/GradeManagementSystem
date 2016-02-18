@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login - Grade Management System</title>
+	<!--Import Google Icon Font-->
+	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	{% load staticfiles %}
+	<!--Import materialize.css-->
+	<link type="text/css" rel="stylesheet" href="{% static 'GMS/materialize.css' %}"  media="screen,projection"/>
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+
+<div class="container" style="margin-top:5%; padding:5px;">
+	<div class="row" style="padding:10px;">
+		<form class="col s12" method="post" action="{% url 'GMS:login' %}">
+			{% csrf_token %}
+			{% if form.errors %}
+				<div class="row">
+					<div class="col s12 m6 offset-m3 l3 offset-l4" style="color:red;">
+						<p>Username or password is incorrect.</p>
+						<p>Please try again.</p>
+					</div>
+				</div>
+			{% endif %}
+			{% if error_message %}
+				<div class="row">
+					<div class="col s12 m6 offset-m3 l3 offset-l4" style="color:red;">
+						{{error_message}}
+						<p>Please try again.</p>
+					</div>
+				</div>
+			{% endif %}
+			<div class="row">
+				<div class="input-field col s12 m6 offset-m3 l3 offset-l4">
+					<i class="material-icons prefix">account_circle</i>
+					<input id="username" name="username" type="text" class="validate" required>
+					<label for="username">Username</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s12 m6 offset-m3 l3 offset-l4">
+					<i class="material-icons prefix">lock</i>
+					<input id="password" name="password" type="password" class="validate" required>
+					<label for="password">Password</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s6 m6 offset-m3 l3 offset-l4">
+					<input type="submit" value="Login" class="waves-effect waves-light btn" />
+					<input type="hidden" name="next" value="{{ next }}" />
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+{# {% load staticfiles %} #}
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="{% static 'GMS/materialize.js' %}"></script>
+</body>
+</html>
