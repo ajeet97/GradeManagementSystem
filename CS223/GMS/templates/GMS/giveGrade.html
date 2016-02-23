@@ -31,15 +31,21 @@ Select the grade<br>
 Select the student roll number<br>
 <select name = "student">
 	{% for s in students %}
-	<option value="{{s.user_id}}">{{s.user_id}}</option>
+	<option value="{{s.user_id.userID}}">{{s}}</option>
 	{%endfor%}
-</select><br><br>
+</select>
+<!-- <ul name = "student">
+	{% for s in students %}
+	<li value="{{s.user_id.userID}}">{{s}}</li>
+	{%endfor%}
+</ul> -->
+<br><br>
 <input type ="submit" value="Submit">
 </form>
-<p>
+<!-- <p>
 Course ID : {{cid}}<br>
 Student ID : {{sid}}<br>
 Grade : {{grade}}
-</p>
+</p> -->
 </body>
 </html>

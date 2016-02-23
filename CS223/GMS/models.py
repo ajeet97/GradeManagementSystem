@@ -115,3 +115,5 @@ class Grade(models.Model):
 	crs4 = models.CharField(max_length=1,choices=GradeChoice, default='')
 	crs5 = models.CharField(max_length=1,choices=GradeChoice, default='')
 	crs6 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	def __str__(self):
+		return self.student.user_id.name +"[" + self.student.user_id.userID +"]"

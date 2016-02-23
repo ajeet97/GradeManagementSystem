@@ -5,13 +5,13 @@
 </head>
 <body>
 {% if user.role %}
-Hello Instructor, {{user.name}} &nbsp;&nbsp;&nbsp;
-<a href="{% url 'GMS:logout' %}">logout</a><br>
-<a href="{% url 'GMS:giveGrade' %}">Give Grade</a>
+	Hello Instructor, {{user.name}} &nbsp;&nbsp;&nbsp;
+	<a href="{% url 'GMS:logout' %}">logout</a><br>
+	<a href="{% url 'GMS:giveGrade' %}">Give Grade</a>
 {% else %}
-Hello Student, {{user.name}} &nbsp;&nbsp;&nbsp;
-<a href="{% url 'GMS:logout' %}">logout</a><br>
-<a href="{% url 'GMS:transcript' %}">Transcript</a>
+	Hello Student, {{user.name}} &nbsp;&nbsp;&nbsp;
+	<a href="{% url 'GMS:logout' %}">logout</a><br>
+	<a href="{% url 'GMS:transcript' %}">Transcript</a>
 {% endif %}
 </body>
 </html>

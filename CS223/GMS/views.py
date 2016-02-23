@@ -49,18 +49,32 @@ def logout(request):
 	return render(request, 'GMS/loggedout.html')
 
 def giveGrade(request):
-	course_id = request.POST.get('course','')
+	course = request.POST.get('course','')
 	student_id = request.POST.get('student', '')
 	grade = request.POST.get('grade','')
+	
+	if student_id != '':
+		u = User.objects.get(userID = student_id)
+		student = Student.objects.get(user_id = u)
+		try:
+			q = Grade.objects.get(student = student)
+		except (KeyError, Grade.DoesNotExist):
+			q = Grade(student = student, crs1 = grade, crs2 = '', crs3 = '', crs4 = '', crs5 = '', crs6 = '')
+		else:
+			q.crs1 = grade
+
+		q.save()
 
 	if "loggedinuserid" in request.session:
-		if course_id == "" or student_id == "" or grade == "" :
+		# if course_id == "" or student_id == "" or grade == "" :
 			user = User.objects.get(userID = request.session["loggedinuserid"])
 			instr = Instructor.objects.get(user_id = user)
 			crs = instr.course_set.all()
 			students = Student.objects.all()
-			return render(request, 'GMS/giveGrade.html', {'user' : user,'crs' : crs,'students' : students, 'cid' : course_id, 'sid' : student_id, 'grade' : grade})
+			return render(request, 'GMS/giveGrade.html', {'user' : user,'crs' : crs,'students' : students})
 		# else :
+			# return render(request,'GMS/giveGrade.html')
+
 			# userStudent = User.objects.get(UserID = student_id)
 			# student = Student.objects.get(user_id = userStudent)
 			# gradeDB = Grade.objects.get(student = student)
