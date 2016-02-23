@@ -4,8 +4,40 @@
 	<title>{{user.name}}</title>
 </head>
 <body>
-Hello, {{user.name}} &nbsp;&nbsp;&nbsp;
-Here is your transcript!<br>
-<a href="{% url 'GMS:logout' %}">logout</a><br>
+ 	Roll number:&nbsp; {{user.userID}} <br>
+ 	Name: &nbsp;{{user.name}} <br>
+ 	Branch: &nbsp;
+ 	{% if student.branch == 1 %}
+ 	Computer Science and Engineering
+ 	{% elif student.branch == 2 %}
+ 	Electrical Engineering
+ 	{% else %}
+ 	Mechanical Engineering
+ 	{% endif %}
+ 	<br>
+	Batch:&nbsp;{{student.batch}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Semester:&nbsp;{{student.semester}}<br><br>
+	{% for crs in crsall %}
+			<h4>Semester&nbsp; Gradesheet</h4>
+			<table style="width:50%">
+				{% for c in crs.courses.all %}
+				<tr>
+					<td>{{c.courseID}}</td>
+					<td>{{c.name}}</td>
+					<td>{{c.LTP}}</td>
+					<td>{{c.credits}}</td>
+					<td>{% if c.courseType %}
+							Credit
+						{% else %}
+							Audit
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</table><br>
+			SPI 10.00<br>
+			CPI 10.00<br>
+	{% endfor %}
+	<br>
+<a href="{% url 'GMS:logout' %}">Logout</a><br>
 </body>
 </html>

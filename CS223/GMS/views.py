@@ -56,6 +56,13 @@ def giveGrade(request):
 	if student_id != '':
 		u = User.objects.get(userID = student_id)
 		student = Student.objects.get(user_id = u)
+		# semester = student.semester
+		# branch = student.branch
+		# if branch == 1:
+
+		# elif branch == 2:
+
+		# else:
 		try:
 			q = Grade.objects.get(student = student)
 		except (KeyError, Grade.DoesNotExist):
@@ -98,13 +105,22 @@ def giveGrade(request):
 
 def transcript(request):
 	if "loggedinuserid" in request.session:
-		# user = User.objects.get(userID = request.session["loggedinuserid"])
+		user = User.objects.get(userID = request.session["loggedinuserid"])
 		# instr = Instructor.objects.get(user_id = user)
 		# crs = Course.objects.all()
 		# crs = instr.course_set.all()
 		# crs = Course.objects.filter(instructor = instr)
-		# students = Student.objects.all()
-		return render(request, 'GMS/transcript.html')
+		student = Student.objects.get(user_id = user)
+		semester = student.semester
+		branch = student.branch
+		if branch == 1:
+			crsall = Courses_CSE.objects.all()
+		elif branch == 2:
+			crsall = Courses_EE.objects.all()
+		else:
+			crsall = Courses_ME.objects.all()
+	
+		return render(request, 'GMS/transcript.html',{'user' : user,'student' : student ,'crsall' : crsall})
 		# return HttpResponse("Hello, " + request.session["loggedinuserid"])
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
