@@ -82,7 +82,10 @@ class Courses_CSE(models.Model):
 	sem = models.IntegerField(choices=Semester,primary_key=True)
 	courses = models.ManyToManyField(Course)
 	def __str__(self):
-		return "Semester " + str(self.sem) +" Courses"
+		retStr = "Semester : " + str(self.sem) + " | Courses : "
+		for crs in self.courses.all() :
+			retStr += crs.courseID + ", "
+		return retStr
 
 class Courses_ME(models.Model):
 	sem = models.IntegerField(choices=Semester,primary_key=True)
@@ -95,3 +98,20 @@ class Courses_EE(models.Model):
 	courses = models.ManyToManyField(Course)
 	def __str__(self):
 		return "Semester " + str(self.sem) +" Courses"
+
+GradeChoice=(
+	('A','A'),
+	('B','B'),
+	('C','C'),
+	('D','D'),
+	('F','F')
+)
+
+class Grade(models.Model):
+	student = models.OneToOneField(Student)
+	crs1 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	crs2 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	crs3 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	crs4 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	crs5 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	crs6 = models.CharField(max_length=1,choices=GradeChoice, default='')
