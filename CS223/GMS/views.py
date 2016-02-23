@@ -13,15 +13,6 @@ def home(request):
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
-def homeInst(request):
-	if "loggedinuserid" in request.session:
-		user = User.objects.get(userID = request.session["loggedinuserid"])
-		return render(request, 'GMS/homeInst.html', {'user' : user})
-		# return HttpResponse("Hello, " + request.session["loggedinuserid"])
-	else:
-		return HttpResponseRedirect(reverse('GMS:login'))
-
-
 def login(request):
 	userid = request.POST.get('username', '')
 	pwd = request.POST.get('password', '')
@@ -46,10 +37,7 @@ def login(request):
 			return render_to_response('GMS/login.html', c)
 		else :
 			request.session["loggedinuserid"] = userid
-			if user.role == 1:
-				return HttpResponseRedirect(reverse('GMS:homeInst'))
-			else:
-				return HttpResponseRedirect(reverse('GMS:home'))
+		return HttpResponseRedirect(reverse('GMS:home'))
 
 
 def logout(request):
