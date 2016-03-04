@@ -1,43 +1,102 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{{user.name}}</title>
-</head>
-<body>
- 	Roll number:&nbsp; {{user.userID}} <br>
- 	Name: &nbsp;{{user.name}} <br>
- 	Branch: &nbsp;
- 	{% if student.branch == 1 %}
- 	Computer Science and Engineering
- 	{% elif student.branch == 2 %}
- 	Electrical Engineering
- 	{% else %}
- 	Mechanical Engineering
- 	{% endif %}
- 	<br>
-	Batch:&nbsp;{{student.batch}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Semester:&nbsp;{{student.semester}}<br><br>
-	{% for crs in crsall %}
-			<h4>Semester&nbsp; Gradesheet</h4>
-			<table style="width:50%">
-				{% for c in crs.courses.all %}
-				<tr>
-					<td>{{c.courseID}}</td>
-					<td>{{c.name}}</td>
-					<td>{{c.LTP}}</td>
-					<td>{{c.credits}}</td>
-					<td>{% if c.courseType %}
-							Credit
-						{% else %}
-							Audit
-						{% endif %}
-					</td>
-				</tr>
-				{% endfor %}
-			</table><br>
-			SPI 10.00<br>
-			CPI 10.00<br>
-	{% endfor %}
-	<br>
-<a href="{% url 'GMS:logout' %}">Logout</a><br>
-</body>
-</html>
+{% extends 'GMS/home.html' %}
+
+{% block title %}{{section.title}}{% endblock %}
+
+{% block content %}
+{% if user.role == 1 and student_selected == 0 %}
+	<h5>Select student to view transcript...</h5>
+	<div class="collection">
+		{% for s in students %}
+			<a href="{{s.user.userID}}" class="collection-item">{{s.user.name}}&nbsp;[{{s.user.userID}}]</a>
+		{% endfor %}
+	</div>
+{% else %}
+	
+	<style type="text/css">
+		.detail_table td {
+			padding:2px;
+		}
+	</style>
+
+	<br><br>
+	<table>
+		<tbody>
+			<tr>
+				<td>
+					<table class="detail_table">
+						<tbody>
+							<tr>
+								<td width="50%">Roll No. : {{student.user.userID}}</td>
+								<td width="50%">Program : {% if student.batch %}PhD{% else %}B.Tech.{% endif %}</td>
+							</tr>
+							<tr>
+								<td>Name : {{student.user.name}}</td>
+								<td>Branch : 
+									{% if student.branch == 1 %}
+										Computer Science and Engineering
+									{% elif student.branch == 2 %}
+										Electrical Engineering
+									{% else %}
+										Mechanical Engineering
+									{% endif %}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<thead>
+							<tr>
+								<th>Academic Year</th>
+								<th rowspan="2">Course ID</th>
+								<th rowspan="2">Course Name</th>
+								<th rowspan="2">Credit</th>
+								<th rowspan="2">Grade</th>
+								<th rowspan="2">SPI</th>
+								<th rowspan="2">CPI</th>
+							</tr>
+							<tr>
+								<th>Semester</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for sem_grades in all_sem_grades %}
+								{% for g in sem_grades %}
+									<tr>
+										{% if forloop.counter == 1 %}
+											<td rowspan="{{sem_grades|length}}">
+												{{g.acad_year}}
+												<p>
+													{% if g.sem_curr_year == '1' %}
+														First
+													{% else %}
+														Second
+													{% endif %}
+												</p>
+											</td>
+										{% endif %}
+										<td>{{g.course.courseID}}</td>
+										<td>{{g.course.name}}</td>
+										<td>{{g.course.credits}}</td>
+										<td>{{g.grade}}</td>
+										{% if forloop.counter == 1 %}
+											<td rowspan="{{sem_grades|length}}">{{g.spi}}</td>
+											<td rowspan="{{sem_grades|length}}">{{g.cpi}}</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+								{% if sem_grades|length %}
+									<tr><td colspan="7"><hr></td></tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+{% endif %}
+{% endblock %}

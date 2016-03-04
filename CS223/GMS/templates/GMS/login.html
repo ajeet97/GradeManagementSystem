@@ -7,7 +7,7 @@
 	
 	{% load staticfiles %}
 	<!--Import materialize.css-->
-	<link type="text/css" rel="stylesheet" href="{% static 'GMS/materialize.css' %}"  media="screen,projection"/>
+	<link type="text/css" rel="stylesheet" href="{% static 'GMS/css/materialize.css' %}"  media="screen,projection"/>
 
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -50,7 +50,7 @@
 			</div>
 			<div class="row">
 				<div class="col s6 m6 offset-m3 l3 offset-l4">
-					<input type="submit" value="Login" class="waves-effect waves-light btn" />
+					<button type="submit" class="waves-effect waves-light btn">Login</button>
 					<input type="hidden" name="next" value="{{ next }}" />
 				</div>
 			</div>
@@ -61,6 +61,6 @@
 
 {# {% load staticfiles %} #}
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="{% static 'GMS/materialize.js' %}"></script>
+<script type="text/javascript" src="{% static 'GMS/js/materialize.js' %}"></script>
 </body>
 </html>

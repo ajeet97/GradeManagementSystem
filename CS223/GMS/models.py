@@ -1,64 +1,33 @@
 from django.db import models
 
 Role=(
-	(1, 'Instructor'),
-	(0, 'Student')
+	(0, 'Student'),
+	(1, 'Instructor')
 )
 
 class User(models.Model):
-	userID = models.CharField(max_length=8, blank = False, null = False)
-	name = models.CharField(max_length=50, blank = False, null = False)
+	userID = models.CharField(max_length=8, blank = False, null = False, primary_key=True)
 	password = models.CharField(max_length=20, blank = False, null = False)
-	role = models.BooleanField(default = 'true', choices= Role)
+	name = models.CharField(max_length=50, blank = False, null = False)
+	email = models.CharField(max_length=50, blank=False, null = False)
 	contact = models.IntegerField(default=0)
+	role = models.BooleanField(default = 'true', choices= Role)
 
 	def __str__(self):
 		return self.name + " [" + self.userID + "]"
 
+
 class Instructor(models.Model):
-	user_id = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 	department = models.CharField(max_length=20)
 
 	def __str__(self):
-		return self.user_id.name + " [" + self.user_id.userID + "]"
-	
-
-Branch=(
-	(1, 'CSE'),
-	(2, 'EE'),
-	(3, 'ME')
-)
-
-Batch=(
-	('1', 'UG2012'),
-	('2', 'UG2013'),
-	('3', 'UG2014'),
-	('4','UG2015')
-)
-
-Semester=(
-	(1, '1'),
-	(2, '2'),
-	(3, '3'),
-	(4, '4'),
-	(5, '5'),
-	(6, '6'),
-	(7, '7'),
-	(8, '8')
-	)
-class Student(models.Model):
-	user_id = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-	branch = models.IntegerField(default =1, choices=Branch)
-	batch = models.CharField(max_length=6,choices=Batch)
-	semester = models.IntegerField(default=1,choices= Semester)
-
-	def __str__(self):
-		return self.user_id.name + " [" + self.user_id.userID + "]"
+		return self.user.name + " [" + self.user.userID + "]"
 	
 
 CourseType=(
-	(1, 'Credit'),
-	(0, 'Audit')
+	(0, 'Audit'),
+	(1, 'Credit')
 )
 
 Credits=(
@@ -70,36 +39,43 @@ Credits=(
 
 class Course(models.Model):
 	instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
-	courseID = models.CharField(max_length=5)
-	name = models.CharField(max_length=50, default = 'Unspecified')
-	LTP = models.CharField(max_length =5)
-	credits = models.IntegerField(default=0,choices=Credits)
-	courseType = models.BooleanField(default='true',choices = CourseType)
+	# Format of Course ID is CCYSN	C = Course Discipline, Y = Year, S = Semester, N = Course No.
+	courseID = models.CharField(max_length=5, default='Unspecified', primary_key=True)
+	name = models.CharField(max_length=50, default='Unspecified')
+	LTP = models.CharField(max_length=5, default='0-0-0')		# Shouldn't it be like L, T, P
+	credits = models.IntegerField(default=0, choices=Credits)
+	courseType = models.BooleanField(default=True, choices=CourseType)
+	gradesUploaded = models.BooleanField(default=False)
+
 	def __str__(self):
 		return self.name + " [" + self.courseID + "]"
 
-class Courses_CSE(models.Model):
-	sem = models.IntegerField(choices=Semester,primary_key=True)
-	courses = models.ManyToManyField(Course)
-	def __str__(self):
-		retStr = "Semester : " + str(self.sem) + " | Courses : "
-		for crs in self.courses.all() :
-			retStr += crs.courseID + ", "
-		return retStr
 
-class Courses_ME(models.Model):
-	sem = models.IntegerField(choices=Semester,primary_key=True)
-	courses = models.ManyToManyField(Course)
-	def __str__(self):
-		return "Semester " + str(self.sem) +" Courses"
+Branch=(
+	(1, 'CSE'),
+	(2, 'EE'),
+	(3, 'ME')
+)
 
-class Courses_EE(models.Model):
-	sem = models.IntegerField(choices=Semester,primary_key=True)
-	courses = models.ManyToManyField(Course)
-	def __str__(self):
-		return "Semester " + str(self.sem) +" Courses"
+Batch=(
+	(0, 'UG'),
+	(1, 'PG')
+)
 
+class Student(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+	branch = models.IntegerField(default=1, choices=Branch)
+	# batch = models.CharField(max_length=6,choices=Batch)
+	# semester = models.IntegerField(default=1,choices= Semester)
+	batch = models.BooleanField(default=0, choices=Batch)
+	year = models.IntegerField(default=2015)
+	allCourses = models.ManyToManyField(Course)
+
+	def __str__(self):
+		return self.user.name + " [" + self.user.userID + "]"
+	
 GradeChoice=(
+	('U','U'),
 	('A','A'),
 	('B','B'),
 	('C','C'),
@@ -108,12 +84,11 @@ GradeChoice=(
 )
 
 class Grade(models.Model):
-	student = models.OneToOneField(Student)
-	crs1 = models.CharField(max_length=1,choices=GradeChoice, default='')
-	crs2 = models.CharField(max_length=1,choices=GradeChoice, default='')
-	crs3 = models.CharField(max_length=1,choices=GradeChoice, default='')
-	crs4 = models.CharField(max_length=1,choices=GradeChoice, default='')
-	crs5 = models.CharField(max_length=1,choices=GradeChoice, default='')
-	crs6 = models.CharField(max_length=1,choices=GradeChoice, default='')
+	ID = models.AutoField(primary_key=True)
+	student = models.ForeignKey(Student, on_delete=models.CASCADE)
+	course = models.ForeignKey(Course, on_delete=models.CASCADE)
+	grade = models.CharField(max_length=1, default='U', choices=GradeChoice)
+
 	def __str__(self):
-		return self.student.user_id.name +"[" + self.student.user_id.userID +"]"
+		return self.student.user.userID + " : " + self.course.courseID + " - " + "\'" + self.grade + "\'."
+		

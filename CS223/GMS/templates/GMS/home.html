@@ -1,17 +1,67 @@
-<!DOCTYPE html>
+{% load staticfiles %}
 <html>
 <head>
-	<title>{{user.name}}</title>
+	<title>{{user.name}}</title><!--Import Google Icon Font-->
+	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<!--Import materialize.css-->
+	<link type="text/css" rel="stylesheet" href="{% static 'GMS/css/materialize.css' %}"  media="screen,projection"/>
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
 </head>
 <body>
-{% if user.role %}
-	Hello Instructor, {{user.name}} &nbsp;&nbsp;&nbsp;
-	<a href="{% url 'GMS:logout' %}">logout</a><br>
-	<a href="{% url 'GMS:giveGrade' %}">Give Grade</a>
-{% else %}
-	Hello Student, {{user.name}} &nbsp;&nbsp;&nbsp;
-	<a href="{% url 'GMS:logout' %}">logout</a><br>
-	<a href="{% url 'GMS:transcript' %}">Transcript</a>
-{% endif %}
+<!-- Load javascripts -->
+<script type="text/javascript" src="{% static 'GMS/jquery-2.1.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'GMS/js/materialize.js' %}"></script>
+
+<nav class="blue">
+	<div class="nav-wrapper">
+		{# <a href="#!" class="brand-logo">Logo</a> #}
+		<a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li class="blue darken-4"><a href="{% url 'GMS:home' %}">&nbsp;&nbsp;&nbsp;&nbsp;Hello, {{user.name}}&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+			{% if user.role %}
+				<li><a href="{% url 'GMS:giveGrade' %}">Give Grades</a></li>
+			{% endif %}
+			<li><a href="{% url 'GMS:transcript' %}">Transcript</a></li>
+			<li><a href="{% url 'GMS:logout' %}"><i class="material-icons right">power_settings_new</i>Logout</a></li>
+		</ul>
+		{# Mobile Menu #}
+		<ul class="side-nav" id="mobile-menu">
+			<li class="blue darken-4"><a href="{% url 'GMS:home' %}">&nbsp;&nbsp;&nbsp;&nbsp;Hello, {{user.name}}&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+			{% if user.role %}
+				<li><a href="{% url 'GMS:giveGrade' %}">Give Grades</a></li>
+			{% endif %}
+			<li><a href="{% url 'GMS:transcript' %}">Transcript</a></li>
+			<li><a href="{% url 'GMS:logout' %}"><i class="material-icons right">power_settings_new</i>Logout</a></li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		$(".button-collapse").sideNav();
+	</script>
+</nav>
+
+<div class="container">
+	{% block content %}
+		<table>
+			<tbody>
+				<tr>
+					<br>
+					<br>
+					<td style="text-align:center; padding:0px;"><img class="IITJ_Logo" src="{% static 'GMS/images/IITJ_Logo.png' %}" width="15%"></td>
+				</tr>
+				<tr>
+					<td style="font-size:2em; color:black; text-align:center; padding:0px;">Welcome to IIT Jodhpur</td>
+				</tr>
+				<tr>
+					<td style="font-size:1.5em; color:black; text-align:center; padding:0px;">Grade Management System</td>
+				</tr>
+			</tbody>
+		</table>
+	{% endblock %}
+</div>
+
 </body>
 </html>

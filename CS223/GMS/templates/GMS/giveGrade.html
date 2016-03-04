@@ -1,51 +1,72 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Give Grades - Grade Management System</title>
-</head>
-<body>
-You are on give grade page.<br> 
-<form action="{% url "GMS:giveGrade" %}" method = "post">
-{% csrf_token %}
-{% if form.errors %}
-	<div class="row">
-		<div class="col s12 m6 offset-m3 l3 offset-l4" style="color:red;">
-			<p>Invalid Error!</p>
-		</div>
-	</div>
+{% extends 'GMS/home.html' %}
+
+{% block title %}{{section.title}}{% endblock %}
+
+{% block content %}
+{% if giveGrade %}
+	<form action="" method="post">
+	{% csrf_token %}
+
+		<table class="striped">
+			<thead>
+				<tr>
+					<th data-field="id">Student [Roll No.]</th>
+					<th data-field="grade" width="15%">Grade</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for student, grade in std_grd_zipped %}
+					<tr>
+						<td>{{student.user.name}} [{{student.user.userID}}]</td>
+						<td>
+							<select name="{{student.user.userID}}" required>
+								<option value="" disabled="disabled" selected="selected">Choose Grade</option>
+								<option value="A" {% if grade == "A" %}selected="selected"{% endif %}>A</option>
+								<option value="B" {% if grade == "B" %}selected="selected"{% endif %}>B</option>
+								<option value="C" {% if grade == "C" %}selected="selected"{% endif %}>C</option>
+								<option value="D" {% if grade == "D" %}selected="selected"{% endif %}>D</option>
+								<option value="F" {% if grade == "F" %}selected="selected"{% endif %}>F</option>
+								<option value="S" {% if grade == "S" %}selected="selected"{% endif %}>S</option>
+								<option value="X" {% if grade == "X" %}selected="selected"{% endif %}>X</option>
+							</select>
+						</td>
+					</tr>
+				{% endfor %}
+
+				<tr>
+					<td><button type="submit" class="waves-effect waves-light btn" value="Submit">Submit</button></td>
+					<td><input type="hidden" name="next" value="{{ next }}" /></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('select').material_select();
+			});
+		</script>
+	</form>
+{% else %}
+	<ul class="collapsible popout" data-collapsible="accordion">
+		{% for c in courses %}
+			<li>
+				<div class="collapsible-header">
+					{{ c.courseID }}
+					<span class="right"><a class="waves-effect {% if c.gradesUploaded %}green waves-purple{% else %}waves-light{% endif %} btn" href="{{c.courseID}}/">
+						{% if c.gradesUploaded %}Edit{% else %}Give{% endif %}
+					</a></span>
+				</div>
+				<div class="collapsible-body">
+					<p>	
+						Name : {{ c.name }}<br>
+						LTP : {{ c.LTP }}<br>
+						Credits : {{ c.credits }}<br>
+						Course Type : {% if c.courseType %}Credit{% else %}Audit{% endif %}
+					</p>
+				</div>
+			</li>
+		{% endfor %}
+	</ul>
 {% endif %}
-Select the course<br>
-<select name = "course">
-	{% for c in crs %}
-	<option value="{{c.courseID}}">{{c.name}}</option>
-	{%endfor%}
-</select><br>
-Select the grade<br>
-<select name = "grade">
-	<option value="A">A</option>
-	<option value="B">B</option>
-	<option value="C">C</option>
-	<option value="D">D</option>
-	<option value="F">F</option>
-</select><br><br>
-Select the student roll number<br>
-<select name = "student">
-	{% for s in students %}
-	<option value="{{s.user_id.userID}}">{{s}}</option>
-	{%endfor%}
-</select>
-<!-- <ul name = "student">
-	{% for s in students %}
-	<li value="{{s.user_id.userID}}">{{s}}</li>
-	{%endfor%}
-</ul> -->
-<br><br>
-<input type ="submit" value="Submit">
-</form>
-<!-- <p>
-Course ID : {{cid}}<br>
-Student ID : {{sid}}<br>
-Grade : {{grade}}
-</p> -->
-</body>
-</html>
+{% endblock %}
