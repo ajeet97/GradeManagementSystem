@@ -6,7 +6,7 @@
 {% if giveGrade %}
 	<form action="" method="post">
 	{% csrf_token %}
-
+		<h5>{{course.name}} [{{course.courseID}}]</h5>
 		<table class="striped">
 			<thead>
 				<tr>
@@ -22,13 +22,17 @@
 						<td>
 							<select name="{{student.user.userID}}" required>
 								<option value="" disabled="disabled" selected="selected">Choose Grade</option>
-								<option value="A" {% if grade == "A" %}selected="selected"{% endif %}>A</option>
-								<option value="B" {% if grade == "B" %}selected="selected"{% endif %}>B</option>
-								<option value="C" {% if grade == "C" %}selected="selected"{% endif %}>C</option>
-								<option value="D" {% if grade == "D" %}selected="selected"{% endif %}>D</option>
-								<option value="F" {% if grade == "F" %}selected="selected"{% endif %}>F</option>
-								<option value="S" {% if grade == "S" %}selected="selected"{% endif %}>S</option>
-								<option value="X" {% if grade == "X" %}selected="selected"{% endif %}>X</option>
+								{% if course.courseType %}
+									<option value="A" {% if grade == "A" %}selected="selected"{% endif %}>A&nbsp;&nbsp;-&nbsp;&nbsp;Excellent</option>
+									<option value="B" {% if grade == "B" %}selected="selected"{% endif %}>B&nbsp;&nbsp;-&nbsp;&nbsp;Good</option>
+									<option value="C" {% if grade == "C" %}selected="selected"{% endif %}>C&nbsp;&nbsp;-&nbsp;&nbsp;Average</option>
+									<option value="D" {% if grade == "D" %}selected="selected"{% endif %}>D&nbsp;&nbsp;-&nbsp;&nbsp;Marginal</option>
+									<option value="F" {% if grade == "F" %}selected="selected"{% endif %}>F&nbsp;&nbsp;-&nbsp;&nbsp;Fail</option>
+									<option value="I" {% if grade == "I" %}selected="selected"{% endif %}>I&nbsp;&nbsp;-&nbsp;&nbsp;Incomplete</option>
+								{% else %}
+									<option value="S" {% if grade == "S" %}selected="selected"{% endif %}>S&nbsp;&nbsp;-&nbsp;&nbsp;Satisfactory</option>
+									<option value="X" {% if grade == "X" %}selected="selected"{% endif %}>X&nbsp;&nbsp;-&nbsp;&nbsp;Unsatisfactory</option>
+								{% endif %}
 							</select>
 						</td>
 					</tr>
@@ -48,12 +52,13 @@
 		</script>
 	</form>
 {% else %}
+	<h5>&nbsp;&nbsp;&nbsp;&nbsp;Select a Course...</h5>
 	<ul class="collapsible popout" data-collapsible="accordion">
 		{% for c in courses %}
 			<li>
 				<div class="collapsible-header">
 					{{ c.courseID }}
-					<span class="right"><a class="waves-effect {% if c.gradesUploaded %}green waves-purple{% else %}waves-light{% endif %} btn" href="{{c.courseID}}/">
+					<span class="right"><a class="waves-effect {% if c.gradesUploaded %}green waves-purple{% else %}waves-light{% endif %} btn gebtn" href="{{c.courseID}}">
 						{% if c.gradesUploaded %}Edit{% else %}Give{% endif %}
 					</a></span>
 				</div>
@@ -68,5 +73,10 @@
 			</li>
 		{% endfor %}
 	</ul>
+	<script>
+		$('.gebtn').on('click', function(e) {
+			$($(this).parent().parent()).trigger('click');
+		});
+	</script>
 {% endif %}
 {% endblock %}

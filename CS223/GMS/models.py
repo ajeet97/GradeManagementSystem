@@ -80,7 +80,10 @@ GradeChoice=(
 	('B','B'),
 	('C','C'),
 	('D','D'),
-	('F','F')
+	('F','F'),
+	('I','I'),
+	('S','S'),
+	('X','X')
 )
 
 class Grade(models.Model):

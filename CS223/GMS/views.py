@@ -10,50 +10,45 @@ def home(request):
 	if "loggedinuserid" in request.session:
 		user = User.objects.get(userID = request.session["loggedinuserid"])
 		return render(request, 'GMS/home.html', {'user' : user})
-		# return HttpResponse("Hello, " + request.session["loggedinuserid"])
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
 def login(request):
 	if "loggedinuserid" in request.session:
 		return HttpResponseRedirect(reverse('GMS:home'))
-	
-	userid = request.POST.get('username', '')
-	pwd = request.POST.get('password', '')
+	if request.method == 'POST':
+		userid = request.POST.get('username', '')
+		pwd = request.POST.get('password', '')
 
-	c = {}
-	c.update(csrf(request))
+		c = {}
+		c.update(csrf(request))
 
-	if userid == '':
-		return render(request, 'GMS/login.html', c)
-
-	try:
-		user = User.objects.get(userID = userid)
-	except(KeyError, User.DoesNotExist):
-		c.update({ 'error_message':'1. Incorrect username or password' })
-		return render(request, 'GMS/login.html', c)
-	else:
-		if pwd != user.password :
-			c.update({ 'error_message':'2. Incorrect username or password' })
-			return render_to_response('GMS/login.html', c)
-		else :
+		if userid == '':
+			return render(request, 'GMS/login.html', c)
+		try:
+			user = User.objects.get(userID = userid)
+		except(KeyError, User.DoesNotExist):
+			c.update({ 'error_message':'Incorrect username or password' })
+			return render(request, 'GMS/login.html', c)
+		else:
+			if pwd != user.password :
+				c.update({ 'error_message':'Incorrect username or password' })
+				return render_to_response('GMS/login.html', c)
 			request.session["loggedinuserid"] = userid
-		return HttpResponseRedirect(reverse('GMS:home'))
+			return HttpResponseRedirect(reverse('GMS:home'))
+	else:
+		return render(request, 'GMS/login.html', {})		
 
 
 def logout(request):
-	if "loggedinuserid" in request.session:
-		try:
-			del request.session["loggedinuserid"]
-		except(KeyError):
-			return HttpResponseRedirect(reverse('GMS:home'))
-		
-		return render(request, 'GMS/loggedout.html')
-	else:
-		return HttpResponseRedirect(reverse('GMS:login'))
+	try:
+		del request.session["loggedinuserid"]
+	except(KeyError):
+		return HttpResponseRedirect(reverse('GMS:home'))
+	
+	return HttpResponseRedirect(reverse('GMS:login'))
 
 def giveGrade(request, course_id=''):
-	# print("Course ID :" + str(course_id))
 	if "loggedinuserid" in request.session:
 		user = User.objects.get(userID = request.session["loggedinuserid"])
 
@@ -224,7 +219,7 @@ def search(request):
 					result = User.objects.filter(Q(userID__contains = query) | Q(name__contains = query))
 					result = result.filter(role = 0)
 
-					return render(request, 'GMS/transcript.html', {'user' : user, 'students' : result, 'student_selected' : 0, 'searched' : 1})
+					return render(request, 'GMS/transcript.html', {'user' : user, 'students' : result, 'query' : query, 'student_selected' : 0, 'searched' : 1})
 				else:
 					return HttpResponseRedirect(reverse('GMS:transcript'))
 			else:

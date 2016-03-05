@@ -7,7 +7,11 @@
 	<br>
 	<div class="row">
 		<div class="input-field col s4">
-			<h5>Select student to view transcript...</h5>
+			{% if searched %}
+				<h5>Result(s) for query '{{query}}'&nbsp;&nbsp;-</h5>
+			{% else %}
+				<h5>Please select student...</h5>
+			{% endif %}
 		</div>
 		<div class="input-field col s4 offset-s4">
 			<form action="{% url 'GMS:search' %}" method="post">
@@ -18,13 +22,17 @@
 		</div>
 	</div>
 	<div class="collection">
-		{% for s in students %}
-			{% if searched %}
-				<a href="../{{s.userID}}" class="collection-item">{{s.name}}&nbsp;[{{s.userID}}]</a>
-			{% else %}
-				<a href="{{s.user.userID}}" class="collection-item">{{s.user.name}}&nbsp;[{{s.user.userID}}]</a>
-			{% endif %}
-		{% endfor %}
+		{% if students|length %}
+			{% for s in students %}
+				{% if searched %}
+					<a href="../{{s.userID}}" class="collection-item">{{s.name}}&nbsp;[{{s.userID}}]</a>
+				{% else %}
+					<a href="{{s.user.userID}}" class="collection-item">{{s.user.name}}&nbsp;[{{s.user.userID}}]</a>
+				{% endif %}
+			{% endfor %}
+		{% else %}
+			<div class="center"><h5>No Result</h5></div>
+		{% endif %}
 	</div>
 {% else %}
 	
