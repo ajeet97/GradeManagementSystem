@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.context_processors import csrf
+from django.db.models import Q
 
 from .models import *
 
@@ -131,11 +132,13 @@ def transcript(request, student_id = ''):
 		# Generating transcript for selected student
 		if student_id == '':
 			student = Student.objects.get(user = user)
-			print("student1 : " + str(student))
 		else:
 			# Generate transcript of selected student (if user = instructor)
 			if user.role == 1:
-				user_selected = User.objects.get(userID = student_id)
+				try:
+					user_selected = User.objects.get(userID = student_id)
+				except (KeyError, User.DoesNotExist):
+					return HttpResponseRedirect(reverse('GMS:transcript'))
 				student = Student.objects.get(user = user_selected)
 			else:
 				return HttpResponseRedirect(reverse('GMS:transcript'))
@@ -206,5 +209,27 @@ def transcript(request, student_id = ''):
 													   'total_sems' : total_sems, 
 													   'all_sem_grades' : all_sem_grades,
 													   'student_selected' : 1})
+	else:
+		return HttpResponseRedirect(reverse('GMS:login'))
+
+
+def search(request):
+	if "loggedinuserid" in request.session:
+		user = User.objects.get(userID = request.session["loggedinuserid"])
+
+		if user.role == 1:
+			if request.method == 'POST':
+				query = request.POST.get('search', '')
+				if query != '':
+					result = User.objects.filter(Q(userID__contains = query) | Q(name__contains = query))
+					result = result.filter(role = 0)
+
+					return render(request, 'GMS/transcript.html', {'user' : user, 'students' : result, 'student_selected' : 0, 'searched' : 1})
+				else:
+					return HttpResponseRedirect(reverse('GMS:transcript'))
+			else:
+				return HttpResponseRedirect(reverse('GMS:transcript'))
+		else:
+			return HttpResponseRedirect(reverse('GMS:transcript'))
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))

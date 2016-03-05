@@ -4,10 +4,26 @@
 
 {% block content %}
 {% if user.role == 1 and student_selected == 0 %}
-	<h5>Select student to view transcript...</h5>
+	<br>
+	<div class="row">
+		<div class="input-field col s4">
+			<h5>Select student to view transcript...</h5>
+		</div>
+		<div class="input-field col s4 offset-s4">
+			<form action="{% url 'GMS:search' %}" method="post">
+			{% csrf_token %}
+				<input id="search" name="search" type="search">
+				<label for="search"><i class="material-icons">search</i></label>
+			</form>
+		</div>
+	</div>
 	<div class="collection">
 		{% for s in students %}
-			<a href="{{s.user.userID}}" class="collection-item">{{s.user.name}}&nbsp;[{{s.user.userID}}]</a>
+			{% if searched %}
+				<a href="../{{s.userID}}" class="collection-item">{{s.name}}&nbsp;[{{s.userID}}]</a>
+			{% else %}
+				<a href="{{s.user.userID}}" class="collection-item">{{s.user.name}}&nbsp;[{{s.user.userID}}]</a>
+			{% endif %}
 		{% endfor %}
 	</div>
 {% else %}
