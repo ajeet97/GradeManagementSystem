@@ -22,4 +22,7 @@ urlpatterns = [
 	url(r'^instructors/(?P<instructor_id>\w+)/$', views.instructors, name = 'instructors'),
 	url(r'^instructors/(?P<instructor_id>\w+)/delete/$', views.deleteInstructor, name = 'deleteInstructor'),
 	url(r'^courses/$', views.courses, name = 'courses'),
+	url(r'^courses/add$', views.addCourse, name = 'addCourse'),
+	url(r'^courses/(?P<course_id>\w+)/$', views.courses, name = 'courses'),
+	url(r'^students/(?P<course_id>\w+)/delete/$', views.deleteStudent, name = 'deleteStudent'),
 ]

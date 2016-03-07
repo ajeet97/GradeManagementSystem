@@ -1,5 +1,185 @@
 {% extends 'GMS/admin/home.html' %}
 
 {% block content %}
-COURSES
+<style type="text/css">
+	.edit_icon{
+		color: #fbc02d;
+		transition: all 0.4s;
+	}
+	.edit_icon:hover {
+		color: #f57f17;
+		box-shadow: 5px;
+	}
+	.delete_icon{
+		color: #ff8a80;
+		transition: all 0.4s;
+	}
+	.delete_icon:hover {
+		color: #b71c1c;
+		box-shadow: 5px;
+	}
+	.success_msg {
+		color: green;
+		font-size: 1.2em;
+	}
+</style>
+
+<br>
+
+
+{% if edit %}
+<h5>Edit Course...</h5>
+<br>
+<div class="row">
+<form class="col s12" action="{% url 'GMS:courses' %}" method="post">
+{% csrf_token %}
+	{% if err_msg %}
+		<div class="row">
+			<div class="col s12">
+				<font color="red">{{err_msg}}</font>
+			</div>
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="name" type="text" name="name" value="{{course.name}}" required>
+			<label for="name">Name</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="courseid" type="text" name="courseid" value="{{course.userID}}" required>
+			<input type="hidden" name="p_courseid" value="{% if course.p_courseID %}{{course.p_courseID}}{% else %}{{course.courseID}}{% endif %}">
+			<label for="courseid">Course - ID</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="LTP" type="text" name="LTP" value="{{course.LTP}}" class="validate" required>
+			<label for="LTP">L-T-P</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<select name="credit" id="credit">
+				<option value="5" {% if Course.credit == 5 %}selected{% endif %}>5</option>
+				<option value="4" {% if Course.credit == 4 %}selected{% endif %}>4</option>
+				<option value="3" {% if Course.credit == 3 %}selected{% endif %}>3</option>
+				<option value="0" {% if Course.credit == 0 %}selected{% endif %}>0</option>
+			</select>
+			<label for="credit">Course Credit</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<select name="courseType" id="courseType">
+				<option value="1" {% if Course.courseType == 1 %}selected{% endif %}>Credit</option>
+				<option value="0" {% if Course.courseType == 0 %}selected{% endif %}>Audir</option>
+			</select>
+			<label for="courseType">Course Type</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="Iuserid" type="text" name="Iuserid" value="{{course.instructor.User.userID}}" class="validate" required>
+			<label for="Iuserid">Instructor - ID</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col s12">
+			<button type="submit" class="waves-effect waves-light btn">Change</button>
+			<a href="{% url 'GMS:courses' %}" class="waves-effect waves-light btn">Cancel</a>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(document).ready(function(){
+		$('select').material_select();
+	});
+</script>
+</div>
+{% else %}
+
+<div class="row">
+	{% if success_msg %}
+		<span class="success_msg left">
+			&nbsp;&nbsp;&nbsp;<i class="material-icons">check_circle</i>&nbsp;{{success_msg}}
+		</span>
+	{% endif %}
+	<span class="right">&nbsp;&nbsp;&nbsp;</span>
+	<span class="right"><a href="{% url 'GMS:addCourse' %}" class="waves-effect waves-purple btn blue darken-3"><i class="material-icons right">add</i>Add Course</a></span>
+</div>
+<div class="row">
+	<div class="input-field col s4">
+		{% if searched %}
+			<h5>Result(s) for query '{{query}}'&nbsp;&nbsp;-</h5>
+		{% else %}
+			<h5>Select course to view detail</h5>
+		{% endif %}
+	</div>
+	<div class="input-field col s4 offset-s4">
+		<form action="{% url 'GMS:search' %}" method="post">
+		{% csrf_token %}
+			<input id="search" name="search" type="search">
+			<input type="hidden" name="search_for" value="admin_courses">
+			<label for="search"><i class="material-icons">search</i></label>
+		</form>
+	</div>
+</div>
+	<ul class="collapsible">
+		{% for s in allCourses %}
+			<li>
+				<div class="collapsible-header">
+					{{s.name}}&nbsp;[{{s.courseID}}]
+					<span class="right">
+						<a href="{% if searched %}../courses/{% endif %}{{s.courseID}}/delete" class="delete_icon edicons">
+							<i class="material-icons">delete</i>
+						</a>
+					</span>
+					<span class="right">
+						<a href="{% if searched %}../course/{% endif %}{{s.courseID}}" class="edit_icon edicons">
+							<i class="material-icons">mode_edit</i>
+						</a>
+					</span>
+				</div>
+				<div class="collapsible-body">
+					<div style="padding:10px;">
+						<table>
+							<tr>
+								<td><b>Name : </b></td>
+								<td>{{s.name}}</td>
+								<td>&nbsp;</td>
+								<td><b>Course - ID :</b></td>
+								<td>{{s.courseID}}</td>
+							</tr>
+							<tr>
+								<td><b>LTP : </b></td>
+								<td>{{s.LTP}}</td>
+								<td>&nbsp;</td>
+								<td><b>Course Credit : </b></td>
+								<td>{{s.credit}}</td>
+							</tr>
+							<tr>
+								<td><b>Course Type : </b></td>
+								<td>
+									{% if s.courseType == 1 %}
+										Credit
+									{% elif s.branch == 0 %}
+										Audit
+									{% endif %}
+								</td>
+								<td>&nbsp;</td>
+								<td><b>Instructor - ID : </b></td>
+								<td>{{s.instructor.User.userID}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</li>
+		{% endfor %}
+
+		<script>
+			$('.edicons').on('click', function(e) {
+				$($(this).parent().parent()).trigger('click');
+			});
+		</script>
+	</ul>
+{% endif %}
 {% endblock %}

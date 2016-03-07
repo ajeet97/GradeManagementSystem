@@ -626,9 +626,137 @@ def deleteInstructor(request, instructor_id):
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
-def courses(request):
+def courses(request, course_id=''):
 	if "loggedinuserid" in request.session:
 		user = User.objects.get(userID = request.session['loggedinuserid'])
-		return render(request, 'GMS/admin/courses.html', {'user' : user})
+		if user.role == 2:
+			if request.method == 'POST':
+				name = request.POST.get('name', '')
+				courseid = request.POST.get('courseid', '')
+				p_courseid = request.POST.get('p_courseid', '')
+				LTP = request.POST.get('LTP', '')
+				credit = request.POST.get('credit', '')
+				courseType = request.POST.get('courseType', '')
+				Iuserid = request.POST.get('Iuserid', '')
+
+				c = {}
+				c = c.update(csrf(request))
+
+				crs = {
+					'name' : name,
+					'courseID' : courseid,
+					'LTP' : LTP,
+					'credit' : credit,
+					'courseType' : courseType,
+					'instructor' : Instructor.objects.get(user = User.objects.get(userID = Iuserid))
+				}
+
+				if c == None:
+					c = {}
+
+				if name != '' and courseid != '' and LTP != '' and credit != '' and courseType != '' and Iuserid != '':
+
+					p_course = Course.objects.get(courseID = p_courseid)
+					if courseid == p_courseid:
+						p_course.name = name
+						p_course.LTP = LTP
+						p_course.credit = credit
+						p_course.courseType = courseType
+						p_course.instructor = Instructor.objects.get(user = User.objects.get(userID = Iuserid))
+						p_course.save()
+
+						allCourses = Course.objects.all().order_by('name')
+
+						c.update({'user' : user, 'allCourses' : allCourses, 'edit' : False, 'success_msg' : "Successfully Updated"})
+						
+						return render(request, 'GMS/admin/courses.html', c)
+					else:
+						try:
+							new_course = Course.objects.get(courseID = courseid)
+						except (KeyError, Course.DoesNotExist):
+							new_course = Course(instructor=Instructor.objects.get(user = User.objects.get(userID = Iuserid)),courseID=courseid,name=name,LTP=LTP,credits=credit,courseType=courseType,gradesUploaded=0)
+							new_course.save()
+
+							p_course.delete()
+
+							allCourses = Course.objects.all().order_by('name')
+							c.update({'user' : user, 'allCourses' : allCourses, 'edit' : False, 'success_msg' : "Successfully Updated"})
+							return render(request, 'GMS/admin/courses.html', c)
+						else:
+							c.update({'user' : user, 'course' : crs, 'edit' : True, 'err_msg' : "ID '%s' already exists." % courseid})
+							return render(request, 'GMS/admin/courses.html', c)
+				else:
+					redirect_url = '/admin/courses/%s' % p_courseid
+					return HttpResponseRedirect(redirect_url)
+
+			if course_id == '':
+				allCourses = Course.objects.all().order_by('name')
+				return render(request, 'GMS/admin/courses.html', { 'user' : user, 'allCourses' : allCourses, 'edit' : False })
+			else:
+				try:
+					requested_course = Course.objects.get(courseID = course_id)
+				except (KeyError, Course.DoesNotExist):
+					return HttpResponseRedirect(reverse('GMS:courses'))
+				return render(request, 'GMS/admin/courses.html', { 'user' : user, 'course' : requested_course, 'edit' : True })
+		else:
+			return HttpResponseRedirect(reverse('GMS:home'))
+	else:
+		return HttpResponseRedirect(reverse('GMS:login'))
+
+def addCourse(request):
+	if "loggedinuserid" in request.session:
+		user = User.objects.get(userID = request.session['loggedinuserid'])
+		if request.method == "POST":
+			name = request.POST.get('name', '')
+			courseid = request.POST.get('courseid', '')
+			LTP = request.POST.get('LTP', '')
+			credit = request.POST.get('credit', '')
+			courseType = request.POST.get('courseType', '')
+			Iuserid = request.POST.get('Iuserid', '')
+
+			c = {}
+			c = c.update(csrf(request))
+
+			if c == None:
+				c = {}
+			c.update({'user' : user})
+			try:
+				inst = Instructor.objects.get(user=User.objects.get(userID=Iuserid))
+			except (KeyError, Instructor.DoesNotExist):
+				c.update({'err_msg' : "Instructor id %s does not exists." % userid})
+				return render(request, 'GMS/admin/addCourse.html', c)
+			else:
+				try:
+					course=Course.objects.get(courseID=courseid)
+				except (KeyError, Course.DoesNotExist):
+					crs=Course(instructor=inst,courseID=courseid,name=name,LTP=LTP,credits=credit,courseType=courseType,gradesUploaded=0)
+					crs.save
+
+					allCourses = Course.objects.all().order_by('name')
+					return render(request, 'GMS/admin/courses.html', { 'allCourses' : allCourses, 'edit' : False, 'success_msg' : "The course with course-id = '%s' was added successfully." % courseid})	
+				else:
+					c.update({'err_msg' : "Course id %s already exists." % userid})
+					return render(request, 'GMS/admin/addCourse.html', c)
+
+		return render(request, 'GMS/admin/addCourse.html', {'user' : user})
+	else:
+		return HttpResponseRedirect(reverse('GMS:login'))
+
+
+def deleteCourse(request, course_id):
+	if "loggedinuserid" in request.session:
+		user = User.objects.get(userID = request.session["loggedinuserid"])
+		if user.role == 2:
+			try:
+				requested_course = Course.objects.get(courseID = course_id)
+			except (KeyError, Course.DoesNotExist):
+				return HttpResponseRedirect(reverse('GMS:courses'))
+			else:
+				requested_course.delete()
+
+				allCourses = Course.objects.all().order_by('name')
+				return render(request, 'GMS/admin/courses.html', {'user' : user, 'allCourses' : allCourses, 'edit' : False, 'success_msg' : "The course with course-id = '%s' was deleted successfully." % course_id})
+		else:
+			return HttpResponseRedirect(reverse('GMS:home'))
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
