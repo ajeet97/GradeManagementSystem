@@ -243,7 +243,7 @@ def search(request):
 
 						return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : students, 'query' : query, 'edit' : False, 'searched' : True})
 					else:
-						if serach_for == "admin_students":
+						if search_for == "admin_students":
 							return HttpResponseRedirect(reverse('GMS:students'))
 						return HttpResponseRedirect(reverse('GMS:transcript'))
 				elif search_for == "admin_instructors":
@@ -428,7 +428,7 @@ def addStudent(request):
 				return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The user with userid = '%s' was added successfully." % userid})
 			else:
 				c.update({'err_msg' : "User id %s already exists." % userid})
-				return render(request, 'GMS/admin.addStudent.html', c)
+				return render(request, 'GMS/admin/addStudent.html', c)
 
 		return render(request, 'GMS/admin/addStudent.html', {'user' : user})
 	else:
