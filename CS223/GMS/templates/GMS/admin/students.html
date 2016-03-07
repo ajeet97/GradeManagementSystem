@@ -1,0 +1,209 @@
+{% extends 'GMS/admin/home.html' %}
+
+{% block content %}
+<style type="text/css">
+	.edit_icon{
+		color: #fbc02d;
+		transition: all 0.4s;
+	}
+	.edit_icon:hover {
+		color: #f57f17;
+		box-shadow: 5px;
+	}
+	.delete_icon{
+		color: #ff8a80;
+		transition: all 0.4s;
+	}
+	.delete_icon:hover {
+		color: #b71c1c;
+		box-shadow: 5px;
+	}
+	.success_msg {
+		color: green;
+		font-size: 1.2em;
+	}
+</style>
+
+<br>
+
+
+{% if edit %}
+<h5>Edit Student...</h5>
+<br>
+<div class="row">
+<form class="col s12" action="{% url 'GMS:students' %}" method="post">
+{% csrf_token %}
+	{% if err_msg %}
+		<div class="row">
+			<div class="col s12">
+				<font color="red">{{err_msg}}</font>
+			</div>
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="name" type="text" name="name" value="{{student.user.name}}" required>
+			<label for="name">Name</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="rollno" type="text" name="userid" value="{{student.user.userID}}" required>
+			<input type="hidden" name="p_userid" value="{% if student.user.p_userID %}{{student.user.p_userID}}{% else %}{{student.user.userID}}{% endif %}">
+			<label for="rollno">Roll No.</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="email" type="email" name="email" class="validate" value="{{student.user.email}}" required>
+			<label for="email">Email</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="newPassword" type="password" name="newPassword">
+			<input type="hidden" name="p_password" value="{{student.user.password}}">
+			<label for="newPassword">Password</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="cnfPassword" type="password" name="cnfPassword">
+			<label for="cnfPassword">Confirm Password</label>
+		</div>
+		<label style="color:#ff8a80;">&nbsp;&nbsp;&nbsp;&nbsp;Password field is optional...</label>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="contact" type="text" name="contact" value="{{student.user.contact}}" required>
+			<label for="contact">Contact</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<select name="branch" id="branch">
+				<option value="1" {% if student.branch == 1 %}selected{% endif %}>Computer Science &amp; Engineering</option>
+				<option value="2" {% if student.branch == 2 %}selected{% endif %}>Electrical Engineering</option>
+				<option value="3" {% if student.branch == 3 %}selected{% endif %}>Mechanical Engineering</option>
+			</select>
+			<label for="branch">Branch</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<!-- max year = Curr_year -->
+			<input id="year" type="number" name="year" class="validate" value="{{student.year}}" min="2012" max="2016" required> 
+			<label for="year">Year</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<select name="batch">
+				<option value="0" {% if student.batch == 0 %}selected{% endif %}>UG</option>
+				<option value="1" {% if student.batch == 1 %}selected{% endif %}>PG</option>
+			</select>
+			<label for="branch">Batch</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col s12">
+			<button type="submit" class="waves-effect waves-light btn">Change</button>
+			<a href="{% url 'GMS:students' %}" class="waves-effect waves-light btn">Cancel</a>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(document).ready(function(){
+		$('select').material_select();
+	});
+</script>
+</div>
+{% else %}
+
+<div class="row">
+	{% if success_msg %}
+		<span class="success_msg left">
+			&nbsp;&nbsp;&nbsp;<i class="material-icons">check_circle</i>&nbsp;{{success_msg}}
+		</span>
+	{% endif %}
+	<span class="right">&nbsp;&nbsp;&nbsp;</span>
+	<span class="right"><a href="{% url 'GMS:addStudent' %}" class="waves-effect waves-purple btn blue darken-3"><i class="material-icons right">add</i>Add Student</a></span>
+</div>
+<div class="row">
+	<div class="input-field col s4">
+		{% if searched %}
+			<h5>Result(s) for query '{{query}}'&nbsp;&nbsp;-</h5>
+		{% else %}
+			<h5>Select student to view detail</h5>
+		{% endif %}
+	</div>
+	<div class="input-field col s4 offset-s4">
+		<form action="{% url 'GMS:search' %}" method="post">
+		{% csrf_token %}
+			<input id="search" name="search" type="search">
+			<input type="hidden" name="search_for" value="admin_students">
+			<label for="search"><i class="material-icons">search</i></label>
+		</form>
+	</div>
+</div>
+	<ul class="collapsible">
+		{% for s in allStudents %}
+			<li>
+				<div class="collapsible-header">
+					{{s.user.name}}&nbsp;[{{s.user.userID}}]
+					<span class="right">
+						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}/delete" class="delete_icon edicons">
+							<i class="material-icons">delete</i>
+						</a>
+					</span>
+					<span class="right">
+						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}" class="edit_icon edicons">
+							<i class="material-icons">mode_edit</i>
+						</a>
+					</span>
+				</div>
+				<div class="collapsible-body">
+					<div style="padding:10px;">
+						<table>
+							<tr>
+								<td><b>Name : </b></td>
+								<td>{{s.user.name}}</td>
+								<td>&nbsp;</td>
+								<td><b>Roll No :</b></td>
+								<td>{{s.user.userID}}</td>
+							</tr>
+							<tr>
+								<td><b>Email : </b></td>
+								<td>{{s.user.email}}</td>
+								<td>&nbsp;</td>
+								<td><b>Contact : </b></td>
+								<td>{{s.user.contact}}</td>
+							</tr>
+							<tr>
+								<td><b>Branch : </b></td>
+								<td>
+									{% if s.branch == 1 %}
+										Computer Science &amp; Engineering
+									{% elif s.branch == 2 %}
+										Electrical Engineering
+									{% else %}
+										Mechanical Engineering
+									{% endif %}
+								</td>
+								<td>&nbsp;</td>
+								<td><b>Batch : </b></td>
+								<td>
+									{% if s.batch %}
+										PhD
+									{% else %}
+										B.Tech.
+									{% endif %}
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</li>
+		{% endfor %}
+
+		<script>
+			$('.edicons').on('click', function(e) {
+				$($(this).parent().parent()).trigger('click');
+			});
+		</script>
+	</ul>
+{% endif %}
+{% endblock %}

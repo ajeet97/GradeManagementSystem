@@ -2,7 +2,8 @@ from django.db import models
 
 Role=(
 	(0, 'Student'),
-	(1, 'Instructor')
+	(1, 'Instructor'),
+	(2, 'Admin')
 )
 
 class User(models.Model):
@@ -11,7 +12,7 @@ class User(models.Model):
 	name = models.CharField(max_length=50, blank = False, null = False)
 	email = models.CharField(max_length=50, blank=False, null = False)
 	contact = models.IntegerField(default=0)
-	role = models.BooleanField(default = 'true', choices= Role)
+	role = models.IntegerField(default = 0, choices= Role)
 
 	def __str__(self):
 		return self.name + " [" + self.userID + "]"

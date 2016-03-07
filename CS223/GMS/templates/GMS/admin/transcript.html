@@ -1,9 +1,9 @@
-{% extends 'GMS/home.html' %}
+{% extends 'GMS/admin/home.html' %}
 
 {% block title %}{{section.title}}{% endblock %}
 
 {% block content %}
-{% if user.role == 1 and student_selected == 0 %}
+{% if user.role == 2 and student_selected == 0 %}
 	<br>
 	<div class="row">
 		<div class="input-field col s4">
@@ -17,7 +17,7 @@
 			<form action="{% url 'GMS:search' %}" method="post">
 			{% csrf_token %}
 				<input id="search" name="search" type="search">
-				<input type="hidden" name="search_for" value="instructor_transcript">
+				<input type="hidden" name="search_for" value="admin_transcript">
 				<label for="search"><i class="material-icons">search</i></label>
 			</form>
 		</div>

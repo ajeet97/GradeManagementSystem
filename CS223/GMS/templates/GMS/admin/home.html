@@ -23,19 +23,18 @@
 		<a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
 		<ul class="right hide-on-med-and-down">
 			<li class="blue darken-4"><a href="{% url 'GMS:home' %}">&nbsp;&nbsp;&nbsp;&nbsp;Hello, {{user.name}}&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
-			{% if user.role == 1 %}
-				<li><a href="{% url 'GMS:giveGrade' %}"><i class="material-icons right">mode_edit</i>Give Grades</a></li>
-			{% endif %}
-			<li><a href="{% url 'GMS:transcript' %}"><i class="material-icons right">description</i>Transcript</a></li>
+			<li><a href="{% url 'GMS:students' %}">Students</a></li>
+			<li><a href="{% url 'GMS:instructors' %}">Instructors</a></li>
+			<li><a href="{% url 'GMS:courses' %}">Courses</a></li>
+			<li><a href="{% url 'GMS:transcript' %}">Transcripts</a></li>
 			<li><a href="{% url 'GMS:logout' %}"><i class="material-icons right">power_settings_new</i>Logout</a></li>
 		</ul>
 		{# Mobile Menu #}
 		<ul class="side-nav" id="mobile-menu">
 			<li class="blue darken-4"><a href="{% url 'GMS:home' %}">&nbsp;&nbsp;&nbsp;&nbsp;Hello, {{user.name}}&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
-			{% if user.role == 1 %}
-				<li><a href="{% url 'GMS:giveGrade' %}"><i class="material-icons right">mode_edit</i>Give Grades</a></li>
-			{% endif %}
-			<li><a href="{% url 'GMS:transcript' %}"><i class="material-icons right">description</i>Transcript</a></li>
+			<li><a href="{% url 'GMS:students' %}">Students</a></li>
+			<li><a href="{% url 'GMS:instructors' %}">Instructors</a></li>
+			<li><a href="{% url 'GMS:courses' %}">Courses</a></li>
 			<li><a href="{% url 'GMS:logout' %}"><i class="material-icons right">power_settings_new</i>Logout</a></li>
 		</ul>
 	</div>

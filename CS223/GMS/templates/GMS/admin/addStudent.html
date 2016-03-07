@@ -1,0 +1,85 @@
+{% extends 'GMS/admin/home.html' %}
+
+{% block content %}
+<h5>Add Student...</h5>
+<br>
+<div class="row">
+<form class="col s12" action="{% url 'GMS:addStudent' %}" method="post">
+{% csrf_token %}
+	{% if err_msg %}
+		<div class="row">
+			<div class="col s12">
+				<font color="red">{{err_msg}}</font>
+			</div>
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="name" type="text" name="name" value="{{student.user.name}}" required>
+			<label for="name">Name</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="rollno" type="text" name="userid" value="{{student.user.userID}}" required>
+			<label for="rollno">Roll No.</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="email" type="email" name="email" value="{{student.user.email}}" class="validate" required>
+			<label for="email">Email</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="newPassword" type="password" name="newPassword" value="{{student.user.password}}" required>
+			<label for="newPassword">Password</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="cnfPassword" type="password" name="cnfPassword" required>
+			<label for="cnfPassword">Confirm Password</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="contact" type="text" name="contact" value="{{student.user.contact}}" required>
+			<label for="contact">Contact</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<select name="branch" id="branch">
+				<option value="1" {% if student.branch == 1 %}selected{% endif %}>Computer Science &amp; Engineering</option>
+				<option value="2" {% if student.branch == 2 %}selected{% endif %}>Electrical Engineering</option>
+				<option value="3" {% if student.branch == 3 %}selected{% endif %}>Mechanical Engineering</option>
+			</select>
+			<label for="branch">Branch</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<!-- max year = Curr_year -->
+			<input id="year" type="number" name="year" value="{{student.year}}" class="validate" min="2012" max="2016" required> 
+			<label for="year">Year</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<select name="batch">
+				<option value="0" {% if student.batch == 0 %}selected{% endif %}>UG</option>
+				<option value="1" {% if student.batch == 1 %}selected{% endif %}>PG</option>
+			</select>
+			<label for="branch">Batch</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col s12">
+			<button type="submit" class="waves-effect waves-light btn">ADD</button>
+			<button type="reset" class="waves-effect waves-light btn">Reset</button>
+			<a href="{% url 'GMS:students' %}" class="waves-effect waves-light btn grey">Cancel</a>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(document).ready(function(){
+		$('select').material_select();
+	});
+</script>
+</div>
+{% endblock %}

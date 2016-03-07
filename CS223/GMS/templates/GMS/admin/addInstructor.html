@@ -1,0 +1,71 @@
+{% extends 'GMS/admin/home.html' %}
+
+{% block content %}
+<h5>Add Instructor...</h5>
+<br>
+<div class="row">
+<form class="col s12" action="{% url 'GMS:addInstructor' %}" method="post">
+{% csrf_token %}
+	{% if err_msg %}
+		<div class="row">
+			<div class="col s12">
+				<font color="red">{{err_msg}}</font>
+			</div>
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="name" type="text" name="name" value="{{instructor.user.name}}" required>
+			<label for="name">Name</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="userid" type="text" name="userid" value="{{instructor.user.userID}}" required>
+			<label for="userid">ID</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="email" type="email" name="email" value="{{instructor.user.email}}" class="validate" required>
+			<label for="email">Email</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="newPassword" type="password" name="newPassword" value="{{instructor.user.password}}" required>
+			<label for="newPassword">Password</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<input id="cnfPassword" type="password" name="cnfPassword" required>
+			<label for="cnfPassword">Confirm Password</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 l6 m6">
+			<input id="contact" type="text" name="contact" value="{{instructor.user.contact}}" required>
+			<label for="contact">Contact</label>
+		</div>
+		<div class="input-field col s12 l6 m6">
+			<select name="department" id="department">
+				<option value="Computer Science & Engineering" {% if instructor.department == "Computer Science & Engineering" %}selected{% endif %}>Computer Science &amp; Engineering</option>
+				<option value="Electrical Engineering" {% if instructor.department == "Electrical Engineering" %}selected{% endif %}>Electrical Engineering</option>
+				<option value="Mechanical Engineering" {% if instructor.department == "Mechanical Engineering" %}selected{% endif %}>Mechanical Engineering</option>
+			</select>
+			<label for="branch">Department</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col s12">
+			<button type="submit" class="waves-effect waves-light btn">ADD</button>
+			<button type="reset" class="waves-effect waves-light btn">Reset</button>
+			<a href="{% url 'GMS:instructors' %}" class="waves-effect waves-light btn grey">Cancel</a>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(document).ready(function(){
+		$('select').material_select();
+	});
+</script>
+</div>
+{% endblock %}
