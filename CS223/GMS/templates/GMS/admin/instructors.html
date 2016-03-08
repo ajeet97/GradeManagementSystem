@@ -22,6 +22,9 @@
 		color: green;
 		font-size: 1.2em;
 	}
+	.prompt_del_modal{
+		width:300px;
+	}
 </style>
 
 <br>
@@ -122,15 +125,28 @@
 		</form>
 	</div>
 </div>
+{% if allInstructors|length %}
 	<ul class="collapsible">
 		{% for s in allInstructors %}
 			<li>
 				<div class="collapsible-header">
-					{{s.user.name}}&nbsp;[{{s.user.userID}}]
+					{{s.user.userID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{s.user.name}}
 					<span class="right">
-						<a href="{% if searched %}../instructors/{% endif %}{{s.user.userID}}/delete" class="delete_icon edicons">
+						<!-- Modal Trigger -->
+						<a class="modal-trigger delete_icon edicons" href="#{{s.user.userID}}">
 							<i class="material-icons">delete</i>
 						</a>
+
+						<!-- Modal Structure -->
+						<div id="{{s.user.userID}}" class="modal edicons prompt_del_modal">
+							<div class="modal-content">
+								<h4>Are you sure?</h4>
+							</div>
+							<div class="modal-footer">
+								<button class="modal-action modal-close waves-effect waves-red btn-flat">No</button>
+								<a href="{% if searched %}../instructors/{% endif %}{{s.user.userID}}/delete" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+							</div>
+						</div>
 					</span>
 					<span class="right">
 						<a href="{% if searched %}../instructors/{% endif %}{{s.user.userID}}" class="edit_icon edicons">
@@ -164,12 +180,22 @@
 				</div>
 			</li>
 		{% endfor %}
-
-		<script>
-			$('.edicons').on('click', function(e) {
-				$($(this).parent().parent()).trigger('click');
-			});
-		</script>
 	</ul>
+	<script>
+		$('.edicons').on('click', function(e) {
+			$($(this).parent().parent()).trigger('click');
+		});
+		
+		$(document).ready(function(){
+			$('.modal-trigger').leanModal();
+		});
+	</script>
+{% else %}
+	{% if searched %}
+		<h5>No Result...</h5>
+	{% else %}
+		<h5>No instructor to show...</h5>
+	{% endif %}
+{% endif %}
 {% endif %}
 {% endblock %}

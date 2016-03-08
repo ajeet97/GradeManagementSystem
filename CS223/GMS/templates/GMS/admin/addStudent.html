@@ -1,6 +1,15 @@
 {% extends 'GMS/admin/home.html' %}
 
 {% block content %}
+<style type="text/css">
+	#courses {
+		height: 40%;
+		overflow-y: hidden;
+	}
+	#courses:hover {
+		overflow-y: auto;
+	}
+</style>
 <h5>Add Student...</h5>
 <br>
 <div class="row">
@@ -68,10 +77,25 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="input-field col s12">
+			<label>All Courses</label>
+		</div>
+		<div class="input-field col s12">
+			&nbsp;
+		</div>
+		<div class="input-field col s12" id="courses">
+			{% for c in allCourses %}
+				<input type="checkbox" name="{{c.courseID}}" id="{{c.courseID}}" />
+				<label for="{{c.courseID}}">{{c.courseID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{c.name}}</label>
+				<br>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="row">
 		<div class="col s12">
 			<button type="submit" class="waves-effect waves-light btn">ADD</button>
 			<button type="reset" class="waves-effect waves-light btn">Reset</button>
-			<a href="{% url 'GMS:students' %}" class="waves-effect waves-light btn grey">Cancel</a>
+			<a href="{% url 'GMS:students' %}" class="waves-effect waves-light btn">Cancel</a>
 		</div>
 	</div>
 </form>
@@ -79,6 +103,12 @@
 <script>
 	$(document).ready(function(){
 		$('select').material_select();
+	});
+
+	$(document).ready(function(){
+		{% for c in  courses_to_be_reg %}
+			document.getElementById('{{c.courseID}}').checked = "checked";
+		{% endfor %}
 	});
 </script>
 </div>

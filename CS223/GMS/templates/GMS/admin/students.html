@@ -22,6 +22,16 @@
 		color: green;
 		font-size: 1.2em;
 	}
+	.prompt_del_modal{
+		width:300px;
+	}
+	#courses {
+		height: 40%;
+		overflow-y: hidden;
+	}
+	#courses:hover {
+		overflow-y: auto;
+	}
 </style>
 
 <br>
@@ -98,6 +108,21 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="input-field col s12">
+			<label>All Courses</label>
+		</div>
+		<div class="input-field col s12">
+			&nbsp;
+		</div>
+		<div class="input-field col s12" id="courses">
+			{% for c in allCourses %}
+				<input type="checkbox" name="{{c.courseID}}" id="{{c.courseID}}" />
+				<label for="{{c.courseID}}">{{c.courseID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{c.name}}</label>
+				<br>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="row">
 		<div class="col s12">
 			<button type="submit" class="waves-effect waves-light btn">Change</button>
 			<a href="{% url 'GMS:students' %}" class="waves-effect waves-light btn">Cancel</a>
@@ -108,6 +133,12 @@
 <script>
 	$(document).ready(function(){
 		$('select').material_select();
+	});
+
+	$(document).ready(function(){
+		{% for c in  p_reg_courses %}
+			document.getElementById('{{c.courseID}}').checked = "checked";
+		{% endfor %}
 	});
 </script>
 </div>
@@ -139,15 +170,28 @@
 		</form>
 	</div>
 </div>
+{% if allStudents|length %}
 	<ul class="collapsible">
 		{% for s in allStudents %}
 			<li>
 				<div class="collapsible-header">
-					{{s.user.name}}&nbsp;[{{s.user.userID}}]
+					{{s.user.userID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{s.user.name}}
 					<span class="right">
-						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}/delete" class="delete_icon edicons">
+						<!-- Modal Trigger -->
+						<a class="modal-trigger delete_icon edicons" href="#{{s.user.userID}}">
 							<i class="material-icons">delete</i>
 						</a>
+
+						<!-- Modal Structure -->
+						<div id="{{s.user.userID}}" class="modal edicons prompt_del_modal">
+							<div class="modal-content">
+								<h4>Are you sure?</h4>
+							</div>
+							<div class="modal-footer">
+								<button class="modal-action modal-close waves-effect waves-red btn-flat">No</button>
+								<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}/delete" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+							</div>
+						</div>
 					</span>
 					<span class="right">
 						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}" class="edit_icon edicons">
@@ -198,12 +242,22 @@
 				</div>
 			</li>
 		{% endfor %}
-
-		<script>
-			$('.edicons').on('click', function(e) {
-				$($(this).parent().parent()).trigger('click');
-			});
-		</script>
 	</ul>
+	<script>
+		$('.edicons').on('click', function(e) {
+			$($(this).parent().parent()).trigger('click');
+		});
+		
+		$(document).ready(function(){
+			$('.modal-trigger').leanModal();
+		});
+	</script>
+{% else %}
+	{% if searched %}
+		<h5>No Result...</h5>
+	{% else %}
+		<h5>No student to show...</h5>
+	{% endif %}
+{% endif %}
 {% endif %}
 {% endblock %}

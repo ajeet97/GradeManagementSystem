@@ -26,9 +26,9 @@
 		{% if students|length %}
 			{% for s in students %}
 				{% if searched %}
-					<a href="../transcript/{{s.userID}}" class="collection-item">{{s.name}}&nbsp;[{{s.userID}}]</a>
+					<a href="../transcript/{{s.userID}}" class="collection-item">{{s.userID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{s.name}}</a>
 				{% else %}
-					<a href="{{s.user.userID}}" class="collection-item">{{s.user.name}}&nbsp;[{{s.user.userID}}]</a>
+					<a href="{{s.user.userID}}" class="collection-item">{{s.user.userID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{s.user.name}}</a>
 				{% endif %}
 			{% endfor %}
 		{% else %}

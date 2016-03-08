@@ -4,53 +4,61 @@
 
 {% block content %}
 {% if giveGrade %}
-	<form action="" method="post">
-	{% csrf_token %}
-		<h5>{{course.name}} [{{course.courseID}}]</h5>
-		<table class="striped">
-			<thead>
-				<tr>
-					<th data-field="id">Student [Roll No.]</th>
-					<th data-field="grade" width="15%">Grade</th>
-				</tr>
-			</thead>
-
-			<tbody>
-				{% for student, grade in std_grd_zipped %}
+	{% if students|length %}
+		<form action="" method="post">
+		{% csrf_token %}
+			<h5>{{course.name}} [{{course.courseID}}]</h5>
+			<table class="striped">
+				<thead>
 					<tr>
-						<td>{{student.user.name}} [{{student.user.userID}}]</td>
-						<td>
-							<select name="{{student.user.userID}}" required>
-								<option value="" disabled="disabled" selected="selected">Choose Grade</option>
-								{% if course.courseType %}
-									<option value="A" {% if grade == "A" %}selected="selected"{% endif %}>A&nbsp;&nbsp;-&nbsp;&nbsp;Excellent</option>
-									<option value="B" {% if grade == "B" %}selected="selected"{% endif %}>B&nbsp;&nbsp;-&nbsp;&nbsp;Good</option>
-									<option value="C" {% if grade == "C" %}selected="selected"{% endif %}>C&nbsp;&nbsp;-&nbsp;&nbsp;Average</option>
-									<option value="D" {% if grade == "D" %}selected="selected"{% endif %}>D&nbsp;&nbsp;-&nbsp;&nbsp;Marginal</option>
-									<option value="F" {% if grade == "F" %}selected="selected"{% endif %}>F&nbsp;&nbsp;-&nbsp;&nbsp;Fail</option>
-									<option value="I" {% if grade == "I" %}selected="selected"{% endif %}>I&nbsp;&nbsp;-&nbsp;&nbsp;Incomplete</option>
-								{% else %}
-									<option value="S" {% if grade == "S" %}selected="selected"{% endif %}>S&nbsp;&nbsp;-&nbsp;&nbsp;Satisfactory</option>
-									<option value="X" {% if grade == "X" %}selected="selected"{% endif %}>X&nbsp;&nbsp;-&nbsp;&nbsp;Unsatisfactory</option>
-								{% endif %}
-							</select>
-						</td>
+						<th data-field="id">Student [Roll No.]</th>
+						<th data-field="grade" width="15%">Grade</th>
 					</tr>
-				{% endfor %}
+				</thead>
 
-				<tr>
-					<td><button type="submit" class="waves-effect waves-light btn" value="Submit">Submit</button></td>
-					<td><input type="hidden" name="next" value="{{ next }}" /></td>
-				</tr>
-			</tbody>
-		</table>
+				<tbody>
+					{% for student, grade in std_grd_zipped %}
+						<tr>
+							<td>{{student.user.name}} [{{student.user.userID}}]</td>
+							<td>
+								<select name="{{student.user.userID}}" required>
+									<option value="" disabled="disabled" selected="selected">Choose Grade</option>
+									{% if course.courseType %}
+										<option value="A" {% if grade == "A" %}selected="selected"{% endif %}>A&nbsp;&nbsp;-&nbsp;&nbsp;Excellent</option>
+										<option value="B" {% if grade == "B" %}selected="selected"{% endif %}>B&nbsp;&nbsp;-&nbsp;&nbsp;Good</option>
+										<option value="C" {% if grade == "C" %}selected="selected"{% endif %}>C&nbsp;&nbsp;-&nbsp;&nbsp;Average</option>
+										<option value="D" {% if grade == "D" %}selected="selected"{% endif %}>D&nbsp;&nbsp;-&nbsp;&nbsp;Marginal</option>
+										<option value="F" {% if grade == "F" %}selected="selected"{% endif %}>F&nbsp;&nbsp;-&nbsp;&nbsp;Fail</option>
+										<option value="I" {% if grade == "I" %}selected="selected"{% endif %}>I&nbsp;&nbsp;-&nbsp;&nbsp;Incomplete</option>
+									{% else %}
+										<option value="S" {% if grade == "S" %}selected="selected"{% endif %}>S&nbsp;&nbsp;-&nbsp;&nbsp;Satisfactory</option>
+										<option value="X" {% if grade == "X" %}selected="selected"{% endif %}>X&nbsp;&nbsp;-&nbsp;&nbsp;Unsatisfactory</option>
+									{% endif %}
+								</select>
+							</td>
+						</tr>
+					{% endfor %}
 
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('select').material_select();
-			});
-		</script>
-	</form>
+					<tr>
+						<td>
+							<button type="submit" class="waves-effect waves-light btn" value="Submit">Submit</button>&nbsp;&nbsp;
+							<a href="{% url 'GMS:giveGrade' %}" class="waves-effect waves-light btn">Cancel</a>
+						</td>
+						<td><input type="hidden" name="next" value="{{ next }}" /></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$('select').material_select();
+				});
+			</script>
+		</form>
+	{% else %}
+		<br>
+		<center><h5>No Student is registered in this course.</h5></center>
+	{% endif %}
 {% else %}
 	<h5>&nbsp;&nbsp;&nbsp;&nbsp;Select a Course...</h5>
 	<ul class="collapsible popout" data-collapsible="accordion">
