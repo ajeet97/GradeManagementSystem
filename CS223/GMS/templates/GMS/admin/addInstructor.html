@@ -19,7 +19,7 @@
 			<label for="name">Name</label>
 		</div>
 		<div class="input-field col s12 l6 m6">
-			<input id="userid" type="text" name="userid" value="{{instructor.user.userID}}" required>
+			<input id="userid" type="text" pattern="IN(CS|EE|ME|HS)[0-9]{3}" title = "Required format is INCS007" name="userid" value="{{instructor.user.userID}}" required>
 			<label for="userid">ID</label>
 		</div>
 	</div>
