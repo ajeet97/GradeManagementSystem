@@ -62,24 +62,13 @@
 	</div>
 	<div class="row">
 		<div class="input-field col s12 l6 m6">
-			<select name="credit" id="credit">
-				<option value="5" {% if Course.credit == 5 %}selected{% endif %}>5</option>
-				<option value="4" {% if Course.credit == 4 %}selected{% endif %}>4</option>
-				<option value="3" {% if Course.credit == 3 %}selected{% endif %}>3</option>
-				<option value="0" {% if Course.credit == 0 %}selected{% endif %}>0</option>
-			</select>
-			<label for="credit">Course Credit</label>
-		</div>
-		<div class="input-field col s12 l6 m6">
 			<select name="courseType" id="courseType">
 				<option value="1" {% if Course.courseType == 1 %}selected{% endif %}>Credit</option>
 				<option value="0" {% if Course.courseType == 0 %}selected{% endif %}>Audit</option>
 			</select>
 			<label for="courseType">Course Type</label>
 		</div>
-	</div>
-	<div class="row">
-		<div class="input-field col s12">
+		<div class="input-field col s12 l6 m6">
 			<select name="Iuserid" id="Iuserid">
 				{% for i in allInstructors %}
 					<option value="{{i.user.userID}}" {% if i.user.userID == course.instructor.user.userID %}selected{% endif %}>{{i.user.name}}&nbsp;[{{i.user.userID}}]</option>
@@ -88,6 +77,7 @@
 			<label for="Iuserid">Instructor</label>
 		</div>
 	</div>
+	
 	<div class="row">
 		<div class="col s12">
 			<button type="submit" class="waves-effect waves-light btn">Change</button>

@@ -1,4 +1,4 @@
-{% extends 'GMS/admin/home.html' %}
+”{% extends 'GMS/admin/home.html' %}
 
 {% block content %}
 <h5>Add Instructor...</h5>
@@ -40,18 +40,18 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="input-field col s12 l6 m6">
+		<div class="input-field col s12">
 			<input id="contact" type="text" name="contact" value="{{instructor.user.contact}}" required>
 			<label for="contact">Contact</label>
 		</div>
-		<div class="input-field col s12 l6 m6">
+		<!-- <div class="input-field col s12 l6 m6">
 			<select name="department" id="department">
 				<option value="Computer Science & Engineering" {% if instructor.department == "Computer Science & Engineering" %}selected{% endif %}>Computer Science &amp; Engineering</option>
 				<option value="Electrical Engineering" {% if instructor.department == "Electrical Engineering" %}selected{% endif %}>Electrical Engineering</option>
 				<option value="Mechanical Engineering" {% if instructor.department == "Mechanical Engineering" %}selected{% endif %}>Mechanical Engineering</option>
 			</select>
 			<label for="branch">Department</label>
-		</div>
+		</div> -->
 	</div>
 	<div class="row">
 		<div class="col s12">

@@ -31,24 +31,13 @@
 	</div>
 	<div class="row">
 		<div class="input-field col s12 l6 m6">
-			<select name="credit" id="credit" required>
-				<option value="5" {% if course.credit == 5 %}selected{% endif %}>5</option>
-				<option value="4" {% if course.credit == 4 %}selected{% endif %}>4</option>
-				<option value="3" {% if course.credit == 3 %}selected{% endif %}>3</option>
-				<option value="0" {% if course.credit == 0 %}selected{% endif %}>0</option>
-			</select>
-			<label for="credit">Course Credit</label>
-		</div>
-		<div class="input-field col s12 l6 m6">
 			<select name="courseType" id="courseType" required>
 				<option value="1" {% if course.courseType == 1 %}selected{% endif %}>Credit</option>
 				<option value="0" {% if course.courseType == 0 %}selected{% endif %}>Audit</option>
 			</select>
 			<label for="courseType">Course Type</label>
 		</div>
-	</div>
-	<div class="row">
-		<div class="input-field col s12">
+		<div class="input-field col s12 l6 m6">
 			<select name="Iuserid" id="Iuserid" required>
 				<option value="" disabled selected>Choose Instructor</option>
 				{% for i in allInstructors %}

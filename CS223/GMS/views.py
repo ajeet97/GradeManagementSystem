@@ -551,8 +551,13 @@ def instructors(request, instructor_id = ''):
 				p_password = request.POST.get('p_password', '')
 				cnfPassword = request.POST.get('cnfPassword', '')
 				contact = request.POST.get('contact', '')
-				department = request.POST.get('department', '')
-
+				# department = request.POST.get('department', '')
+				if userid[2] == 'C':
+					department="Computer Science & Engineering"
+				elif userid[2] == 'E':
+					department="Electrical Engineering"
+				else:
+					department="Mechanical Engineering"
 				c = {}
 				c = c.update(csrf(request))
 
@@ -645,8 +650,13 @@ def addInstructor(request):
 			newPassword = request.POST.get('newPassword', '')
 			cnfPassword = request.POST.get('cnfPassword', '')
 			contact = request.POST.get('contact', '')
-			department = request.POST.get('department', '')
-
+			# department = request.POST.get('department', '')
+			if userid[2] == 'C':
+				department="Computer Science & Engineering"
+			elif userid[2] == 'E':
+				department="Electrical Engineering"
+			else:
+				department="Mechanical Engineering"
 			ins = {
 				'user' : {
 					'userID' : userid,
