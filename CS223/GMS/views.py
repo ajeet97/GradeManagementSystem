@@ -717,10 +717,11 @@ def courses(request, course_id=''):
 				courseid = request.POST.get('courseid', '')
 				p_courseid = request.POST.get('p_courseid', '')
 				LTP = request.POST.get('LTP', '')
-				credit = request.POST.get('credit', '')
+				# credit = request.POST.get('credit', '')
 				courseType = request.POST.get('courseType', '')
 				Iuserid = request.POST.get('Iuserid', '')
-
+				temp=LTP.split("-")
+				credit=(int)(temp[0])+(int)(temp[1])+((int)(temp[2]))/3
 				c = {}
 				c = c.update(csrf(request))
 
@@ -796,10 +797,11 @@ def addCourse(request):
 			name = request.POST.get('name', '')
 			courseid = request.POST.get('courseid', '')
 			LTP = request.POST.get('LTP', '')
-			credit = request.POST.get('credit', '')
+			# credit = request.POST.get('credit', '')
 			courseType = request.POST.get('courseType', '')
 			Iuserid = request.POST.get('Iuserid', '')
-
+			temp=LTP.split("-")
+			credit=(int)(temp[0])+(int)(temp[1])+((int)(temp[2]))/3
 			c = {}
 			c = c.update(csrf(request))
 

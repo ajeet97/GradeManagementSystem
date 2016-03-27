@@ -49,14 +49,14 @@
 			<label for="name">Name</label>
 		</div>
 		<div class="input-field col s12 l6 m6">
-			<input id="courseid" type="text" name="courseid" value="{{course.courseID}}" required>
+			<input id="courseid" type="text" name="courseid" pattern="(CS|EE|ME|HS|CY)[0-9]{3}" value="{{course.courseID}}" required>
 			<input type="hidden" name="p_courseid" value="{% if course.p_courseID %}{{course.p_courseID}}{% else %}{{course.courseID}}{% endif %}">
 			<label for="courseid">Course - ID</label>
 		</div>
 	</div>
 	<div class="row">
 		<div class="input-field col s12">
-			<input id="LTP" type="text" name="LTP" value="{{course.LTP}}" class="validate" required>
+			<input id="LTP" type="text" name="LTP" value="{{course.LTP}}" pattern="[0-5]{1}-[0-1]{1}-(0|3|6|9|12)" class="validate" required>
 			<label for="LTP">L-T-P</label>
 		</div>
 	</div>

@@ -19,13 +19,13 @@
 			<label for="name">Name</label>
 		</div>
 		<div class="input-field col s12 l6 m6">
-			<input id="courseid" type="text" pattern="(CS|EE|ME|HS)[0-9]{3}" title = "Required format is CS223" name="courseid" value="{{course.courseID}}" required>
+			<input id="courseid" type="text" pattern="(CS|EE|ME|HS|CY)[0-9]{3}" name="courseid" value="{{course.courseID}}" required>
 			<label for="courseid">Course - ID</label>
 		</div>
 	</div>
 	<div class="row">
 		<div class="input-field col s12">
-			<input id="LTP" type="text" pattern="[0-5]{1}-[0-1]{1}-[0-1]{1}" title = "Required format is 3-1-1" name="LTP" value="{{course.LTP}}" class="validate" required>
+			<input id="LTP" type="text" pattern="[0-5]{1}-[0-1]{1}-(0|3|6|9|12)" name="LTP" value="{{course.LTP}}" class="validate" required>
 			<label for="LTP">L-T-P</label>
 		</div>
 	</div>
