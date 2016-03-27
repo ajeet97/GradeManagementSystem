@@ -291,10 +291,15 @@ def students(request, student_id=''):
 				p_password = request.POST.get('p_password', '')
 				cnfPassword = request.POST.get('cnfPassword', '')
 				contact = request.POST.get('contact', '')
-				branch = request.POST.get('branch', '')
+				# branch = request.POST.get('branch', '')
 				year = request.POST.get('year', '')
 				batch = request.POST.get('batch', '')
-
+				if userid[3] == 'C':
+					branch = 1
+				elif userid[3] == 'E':
+					branch = 2
+				else:
+					branch = 3
 				if batch == '0':
 					batch = False
 				else:
@@ -437,10 +442,16 @@ def addStudent(request):
 			newPassword = request.POST.get('newPassword', '')
 			cnfPassword = request.POST.get('cnfPassword', '')
 			contact = request.POST.get('contact', '')
-			branch = request.POST.get('branch', '')
+			# branch = request.POST.get('branch', '')
 			year = request.POST.get('year', '')
 			batch = request.POST.get('batch', '')
 
+			if userid[3] == 'C':
+				branch = 1
+			elif userid[3] == 'E':
+				branch = 2
+			else:
+				branch = 3
 			if batch == '0':
 				batch = False
 			else:

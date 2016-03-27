@@ -57,7 +57,7 @@
 		</div>
 		<div class="input-field col s12 l6 m6">
 			<input id="rollno" type="text" name="userid" value="{{student.user.userID}}" required>
-			<input type="hidden" name="p_userid" value="{% if student.user.p_userID %}{{student.user.p_userID}}{% else %}{{student.user.userID}}{% endif %}">
+			<input type="hidden" name="p_userid" pattern="(B|P)1[2-5]{1}(CS|EE|ME)[0-9]{3}" value="{% if student.user.p_userID %}{{student.user.p_userID}}{% else %}{{student.user.userID}}{% endif %}">
 			<label for="rollno">Roll No.</label>
 		</div>
 	</div>
@@ -80,18 +80,18 @@
 		<label style="color:#ff8a80;">&nbsp;&nbsp;&nbsp;&nbsp;Password field is optional...</label>
 	</div>
 	<div class="row">
-		<div class="input-field col s12 l6 m6">
+		<div class="input-field col s12">
 			<input id="contact" type="text" name="contact" value="{{student.user.contact}}" required>
 			<label for="contact">Contact</label>
 		</div>
-		<div class="input-field col s12 l6 m6">
+		<!-- <div class="input-field col s12 l6 m6">
 			<select name="branch" id="branch">
 				<option value="1" {% if student.branch == 1 %}selected{% endif %}>Computer Science &amp; Engineering</option>
 				<option value="2" {% if student.branch == 2 %}selected{% endif %}>Electrical Engineering</option>
 				<option value="3" {% if student.branch == 3 %}selected{% endif %}>Mechanical Engineering</option>
 			</select>
 			<label for="branch">Branch</label>
-		</div>
+		</div> -->
 	</div>
 	<div class="row">
 		<div class="input-field col s12 l6 m6">
