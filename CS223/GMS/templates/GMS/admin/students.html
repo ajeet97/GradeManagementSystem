@@ -18,6 +18,14 @@
 		color: #b71c1c;
 		box-shadow: 5px;
 	}
+	.view_icon{
+		color: #9fa8da;
+		transition: all 0.4s;
+	}
+	.view_icon:hover {
+		color: #3f51b5;
+		box-shadow: 5px;
+	}
 	.success_msg {
 		color: green;
 		font-size: 1.2em;
@@ -57,7 +65,7 @@
 		</div>
 		<div class="input-field col s12 l6 m6">
 			<input id="rollno" type="text" name="userid" value="{{student.user.userID}}" required>
-			<input type="hidden" name="p_userid" pattern="(B|P)1[2-5]{1}(CS|EE|ME)[0-9]{3}" value="{% if student.user.p_userID %}{{student.user.p_userID}}{% else %}{{student.user.userID}}{% endif %}">
+			<input type="hidden" name="p_userid" pattern="(B|P)1[2-5]{1}(CS|EE|ME)[0-9]{3}" title="Ex. B14CS001" value="{% if student.user.p_userID %}{{student.user.p_userID}}{% else %}{{student.user.userID}}{% endif %}">
 			<label for="rollno">Roll No.</label>
 		</div>
 	</div>
@@ -81,7 +89,7 @@
 	</div>
 	<div class="row">
 		<div class="input-field col s12">
-			<input id="contact" type="text" name="contact" value="{{student.user.contact}}" required>
+			<input id="contact" type="text" name="contact" pattern="[0-9]{10}" title="Please enter mobile number!" maxlength="10" value="{{student.user.contact}}" required>
 			<label for="contact">Contact</label>
 		</div>
 		<!-- <div class="input-field col s12 l6 m6">
@@ -178,7 +186,7 @@
 					{{s.user.userID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{s.user.name}}
 					<span class="right">
 						<!-- Modal Trigger -->
-						<a class="modal-trigger delete_icon edicons" href="#{{s.user.userID}}">
+						<a class="modal-trigger delete_icon edicons tooltipped" data-position="top" data-delay="800" data-tooltip="Delete" href="#{{s.user.userID}}">
 							<i class="material-icons">delete</i>
 						</a>
 
@@ -194,8 +202,13 @@
 						</div>
 					</span>
 					<span class="right">
-						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}" class="edit_icon edicons">
+						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}" class="edit_icon edicons tooltipped" data-position="top" data-delay="800" data-tooltip="Edit">
 							<i class="material-icons">mode_edit</i>
+						</a>
+					</span>
+					<span class="right">
+						<a href="{% if searched %}../students/{% endif %}{{s.user.userID}}/view" class="view_icon edicons tooltipped" data-position="top" data-delay="800" data-tooltip="View">
+							<i class="material-icons">remove_red_eye</i>
 						</a>
 					</span>
 				</div>

@@ -1,4 +1,4 @@
-”{% extends 'GMS/admin/home.html' %}
+{% extends 'GMS/admin/home.html' %}
 
 {% block content %}
 <h5>Add Instructor...</h5>
@@ -19,7 +19,7 @@
 			<label for="name">Name</label>
 		</div>
 		<div class="input-field col s12 l6 m6">
-			<input id="userid" type="text" pattern="IN(CS|EE|ME|HS)[0-9]{3}" title = "Required format is INCS007" name="userid" value="{{instructor.user.userID}}" required>
+			<input id="userid" type="text" pattern="IN(CS|EE|ME|HS)[0-9]{3}" title = "Ex. INCS007" name="userid" value="{{instructor.user.userID}}" required>
 			<label for="userid">ID</label>
 		</div>
 	</div>
@@ -41,7 +41,7 @@
 	</div>
 	<div class="row">
 		<div class="input-field col s12">
-			<input id="contact" type="text" name="contact" value="{{instructor.user.contact}}" required>
+			<input id="contact" type="text" name="contact" pattern="[0-9]{10}" title="Please enter mobile number!" maxlength="10" value="{{instructor.user.contact}}" required>
 			<label for="contact">Contact</label>
 		</div>
 		<!-- <div class="input-field col s12 l6 m6">

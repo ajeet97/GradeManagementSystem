@@ -63,8 +63,8 @@
 	<div class="row">
 		<div class="input-field col s12 l6 m6">
 			<select name="courseType" id="courseType">
-				<option value="1" {% if Course.courseType == 1 %}selected{% endif %}>Credit</option>
-				<option value="0" {% if Course.courseType == 0 %}selected{% endif %}>Audit</option>
+				<option value="1" {% if course.courseType == 1 %}selected{% endif %}>Credit</option>
+				<option value="0" {% if course.courseType == 0 %}selected{% endif %}>Audit</option>
 			</select>
 			<label for="courseType">Course Type</label>
 		</div>
@@ -128,7 +128,7 @@
 					{{s.name}}&nbsp;[{{s.courseID}}]
 					<span class="right">
 						<!-- Modal Trigger -->
-						<a class="modal-trigger delete_icon edicons" href="#{{s.courseID}}">
+						<a class="modal-trigger delete_icon edicons tooltipped" data-position="top" data-delay="800" data-tooltip="Delete" href="#{{s.courseID}}">
 							<i class="material-icons">delete</i>
 						</a>
 
@@ -144,7 +144,7 @@
 						</div>
 					</span>
 					<span class="right">
-						<a href="{% if searched %}../courses/{% endif %}{{s.courseID}}" class="edit_icon edicons">
+						<a href="{% if searched %}../courses/{% endif %}{{s.courseID}}" class="edit_icon edicons tooltipped" data-position="top" data-delay="800" data-tooltip="Edit">
 							<i class="material-icons">mode_edit</i>
 						</a>
 					</span>

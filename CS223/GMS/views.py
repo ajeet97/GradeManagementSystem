@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.context_processors import csrf
 from django.db.models import Q
+# from validate_email import validate_email
 
 from .models import *
 
@@ -59,7 +60,7 @@ def giveGrade(request, course_id=''):
 			instr = Instructor.objects.get(user = user)
 			courses = instr.course_set.all()
 			if course_id == '':
-				return render(request, 'GMS/giveGrade.html', {'giveGrade' : 0, 'user' : user, 'courses' : courses})
+				return render(request, 'GMS/giveGrade.html', {'giveGrade' : 0, 'user' : user, 'courses' : courses, 'curr_tab' : 'giveGrade'})
 			else:
 				try:
 					course = courses.get(courseID = course_id)
@@ -98,7 +99,8 @@ def giveGrade(request, course_id=''):
 																	  'students' : students,
 																	  'course' : course,
 																	  'grades' : grades,
-																	  'std_grd_zipped' : zip(students, grades)})
+																	  'std_grd_zipped' : zip(students, grades),
+																	  'curr_tab' : 'giveGrade'})
 				
 		else :
 			return HttpResponseRedirect(reverse('GMS:home'))
@@ -126,9 +128,9 @@ def transcript(request, student_id = ''):
 			students = Student.objects.all().order_by('user_id')
 			if student_id == '':
 				if user.role == 1:
-					return render(request, 'GMS/transcript.html', {'user' : user, 'students' : students, 'student_selected' : 0})
+					return render(request, 'GMS/transcript.html', {'user' : user, 'students' : students, 'student_selected' : 0, 'curr_tab' : 'transcript'})
 				else:
-					return render(request, 'GMS/admin/transcript.html', {'user' : user, 'students' : students, 'student_selected' : 0})
+					return render(request, 'GMS/admin/transcript.html', {'user' : user, 'students' : students, 'student_selected' : 0, 'curr_tab' : 'transcript'})
 
 		# Generating transcript for selected student
 		if student_id == '':
@@ -212,7 +214,8 @@ def transcript(request, student_id = ''):
 													   'student' : student, 
 													   'total_sems' : total_sems, 
 													   'all_sem_grades' : all_sem_grades,
-													   'student_selected' : 1})
+													   'student_selected' : 1,
+													   'curr_tab' : 'transcript'})
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
@@ -231,17 +234,17 @@ def search(request):
 						result = result.filter(role = 0)
 
 						if search_for == "instructor_transcript":
-							return render(request, 'GMS/transcript.html', {'user' : user, 'students' : result, 'query' : query, 'student_selected' : 0, 'searched' : True})
+							return render(request, 'GMS/transcript.html', {'user' : user, 'students' : result, 'query' : query, 'student_selected' : 0, 'searched' : True, 'curr_tab' : 'transcript'})
 						
 						if search_for == "admin_transcript":
-							return render(request, 'GMS/admin/transcript.html', {'user' : user, 'students' : result, 'query' : query, 'student_selected' : 0, 'searched' : True})
+							return render(request, 'GMS/admin/transcript.html', {'user' : user, 'students' : result, 'query' : query, 'student_selected' : 0, 'searched' : True, 'curr_tab' : 'transcript'})
 
 						students = []
 						for r in result:
 							s = Student.objects.get(user = r)
 							students.append(s)
 
-						return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : students, 'query' : query, 'edit' : False, 'searched' : True})
+						return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : students, 'query' : query, 'edit' : False, 'searched' : True, 'curr_tab' : 'students'})
 					else:
 						if search_for == "admin_students":
 							return HttpResponseRedirect(reverse('GMS:students'))
@@ -256,13 +259,13 @@ def search(request):
 							i = Instructor.objects.get(user = r)
 							instructors.append(i)
 
-						return render(request, 'GMS/admin/instructors.html', {'user' : user, 'allInstructors' : instructors, 'query' : query, 'edit' : False, 'searched' : True})
+						return render(request, 'GMS/admin/instructors.html', {'user' : user, 'allInstructors' : instructors, 'query' : query, 'edit' : False, 'searched' : True, 'curr_tab' : 'instructors'})
 					
 					return HttpResponseRedirect(reverse('GMS:instructors'))
 				elif search_for == "admin_courses":
 					if query != '':
 						result = Course.objects.filter(Q(courseID__contains = query) | Q(name__contains = query))
-						return render(request, 'GMS/admin/courses.html', {'user' : user, 'allCourses' : result, 'query' : query, 'edit' : False, 'searched' : True})
+						return render(request, 'GMS/admin/courses.html', {'user' : user, 'allCourses' : result, 'query' : query, 'edit' : False, 'searched' : True, 'curr_tab' : 'courses'})
 
 					return HttpResponseRedirect(reverse('GMS:courses'))
 
@@ -327,7 +330,7 @@ def students(request, student_id=''):
 
 				if name != '' and userid != '' and email != '' and contact != '' and branch != '' and year != '' and batch != '':
 					if newPassword != cnfPassword:
-						c.update({'edit' : True, 'user' : user, 'student' : std, 'err_msg' : "Password does not match."})
+						c.update({'edit' : True, 'user' : user, 'student' : std, 'err_msg' : "Password does not match.", 'curr_tab' : 'students'})
 						return render(request, 'GMS/admin/students.html', c)
 					if newPassword == '':
 						newPassword = p_password
@@ -364,7 +367,7 @@ def students(request, student_id=''):
 
 						allStudents = Student.objects.all().order_by('user_id')
 
-						c.update({'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The Student with Roll No. = '%s' was updated successfully." % userid})
+						c.update({'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The Student with Roll No. = '%s' was updated successfully." % userid, 'curr_tab' : 'students'})
 						
 						return render(request, 'GMS/admin/students.html', c)
 					else:
@@ -390,7 +393,7 @@ def students(request, student_id=''):
 							p_user.delete()
 
 							allStudents = Student.objects.all().order_by('user_id')
-							c.update({'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The Student with Roll No. = '%s' was updated successfully." % userid})
+							c.update({'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The Student with Roll No. = '%s' was updated successfully." % userid, 'curr_tab' : 'students'})
 							return render(request, 'GMS/admin/students.html', c)
 						else:
 							for c1 in allCourses:
@@ -402,7 +405,8 @@ def students(request, student_id=''):
 									  'allCourses' : allCourses,
 									  'p_reg_courses' : courses_to_be_reg, 
 									  'edit' : True, 
-									  'err_msg' : "User id '%s' already exists." % userid})
+									  'err_msg' : "User id '%s' already exists." % userid,
+									  'curr_tab' : 'students'})
 							return render(request, 'GMS/admin/students.html', c)
 				else:
 					redirect_url = '/admin/students/%s' % p_userid
@@ -410,7 +414,7 @@ def students(request, student_id=''):
 
 			if student_id == '':
 				allStudents = Student.objects.all().order_by('user_id')
-				return render(request, 'GMS/admin/students.html', { 'user' : user, 'allStudents' : allStudents, 'edit' : False })
+				return render(request, 'GMS/admin/students.html', { 'user' : user, 'allStudents' : allStudents, 'edit' : False, 'curr_tab' : 'students' })
 			else:
 				try:
 					requested_user = User.objects.get(userID = student_id)
@@ -424,9 +428,34 @@ def students(request, student_id=''):
 																	'student' : requested_student,
 									  								'p_reg_courses' : p_reg_courses, 
 																	'allCourses' : allCourses,
-																	'edit' : True })
+																	'edit' : True,
+																	'curr_tab' : 'students' })
 		else:
 			return HttpResponseRedirect(reverse('GMS:home'))
+	else:
+		return HttpResponseRedirect(reverse('GMS:login'))
+
+
+def viewStudent(request, student_id):
+	if "loggedinuserid" in request.session:
+		user = User.objects.get(userID = request.session['loggedinuserid'])
+		if user.role != 2:
+			return HttpResponseRedirect(reverse('GMS:home'))
+		try:
+			requested_user = User.objects.get(userID = student_id)
+		except(KeyError, User.DoesNotExist):
+			return HttpResponseRedirect(reverse('GMS:home'))
+		else:
+			try:
+				student = Student.objects.get(user = requested_user)
+			except(KeyError, Student.DoesNotExist):
+				return HttpResponseRedirect(reverse('GMS:home'))
+
+		reg_courses = student.allCourses.all()
+		return render(request, 'GMS/admin/viewStudent.html', { 'user' : user,
+															   'student' : student,
+															   'reg_courses' : reg_courses,
+															   'curr_tab' : 'students' })
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
@@ -434,6 +463,8 @@ def students(request, student_id=''):
 def addStudent(request):
 	if "loggedinuserid" in request.session:
 		user = User.objects.get(userID = request.session['loggedinuserid'])
+		if user.role != 2:
+			return HttpResponseRedirect(reverse('GMS:home'))
 		allCourses = Course.objects.all().extra(select = {'lower_course_id' : 'lower(courseID)'}).order_by('lower_course_id')
 		if request.method == "POST":
 			name = request.POST.get('name', '')
@@ -445,6 +476,8 @@ def addStudent(request):
 			# branch = request.POST.get('branch', '')
 			year = request.POST.get('year', '')
 			batch = request.POST.get('batch', '')
+
+			# is_email_exist = validate_email(email, verify=True)
 
 			if userid[3] == 'C':
 				branch = 1
@@ -480,10 +513,15 @@ def addStudent(request):
 			courses_to_be_reg = []
 
 
-			c.update({'user' : user, 'student' : std, 'allCourses' : allCourses})
+			c.update({'user' : user, 'student' : std, 'allCourses' : allCourses, 'curr_tab' : 'students'})
+
 			try:
 				new_user = User.objects.get(userID = userid)
 			except (KeyError, User.DoesNotExist):
+				# if is_email_exist == False:
+				# 	c.update({'err_msg' : 'Email does not exists.'})
+				# 	return render('GMS/admin/addStudent.html', c)
+
 				if newPassword != cnfPassword:
 					c.update({'err_msg' : "Password does not match."})
 					return render(request, 'GMS/admin/addStudent.html', c)
@@ -504,7 +542,7 @@ def addStudent(request):
 				new_student.save()
 
 				allStudents = Student.objects.all().order_by('user_id')
-				return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The user with userid = '%s' was added successfully." % userid})
+				return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The user with userid = '%s' was added successfully." % userid, 'curr_tab' : 'students'})
 			else:
 				for c1 in allCourses:
 					if request.POST.get(c1.courseID, ''):
@@ -512,7 +550,7 @@ def addStudent(request):
 				c.update({'err_msg' : "User id %s already exists." % userid, 'courses_to_be_reg' : courses_to_be_reg})
 				return render(request, 'GMS/admin/addStudent.html', c)
 
-		return render(request, 'GMS/admin/addStudent.html', {'user' : user, 'allCourses' : allCourses})
+		return render(request, 'GMS/admin/addStudent.html', {'user' : user, 'allCourses' : allCourses, 'curr_tab' : 'students'})
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
@@ -531,7 +569,7 @@ def deleteStudent(request, student_id):
 				requested_user.delete()
 
 				allStudents = Student.objects.all().order_by('user_id')
-				return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The user with userid = '%s' was deleted successfully." % student_id})
+				return render(request, 'GMS/admin/students.html', {'user' : user, 'allStudents' : allStudents, 'edit' : False, 'success_msg' : "The user with userid = '%s' was deleted successfully." % student_id, 'curr_tab' : 'students'})
 		else:
 			return HttpResponseRedirect(reverse('GMS:home'))
 	else:
@@ -576,9 +614,11 @@ def instructors(request, instructor_id = ''):
 					'department' : department
 				}
 
+				c.update({'curr_tab' : 'instructors'})
+
 				if name != '' and userid != '' and email != '' and contact != '' and department != '':
 					if newPassword != cnfPassword:
-						c.update({'edit' : True, 'user' : user, 'instructor' : ins, 'err_msg' : "Password does not match."})
+						c.update({'edit' : True, 'user' : user, 'instructor' : ins, 'err_msg' : "Password does not match.", 'curr_tab' : 'instructors'})
 						return render(request, 'GMS/admin/instructors.html', c)
 					if newPassword == '':
 						newPassword = p_password
@@ -625,7 +665,7 @@ def instructors(request, instructor_id = ''):
 
 			if instructor_id == '':
 				allInstructors = Instructor.objects.all().order_by('user_id')
-				return render(request, 'GMS/admin/instructors.html', { 'user' : user, 'allInstructors' : allInstructors, 'edit' : False })
+				return render(request, 'GMS/admin/instructors.html', { 'user' : user, 'allInstructors' : allInstructors, 'edit' : False, 'curr_tab' : 'instructors' })
 			else:
 				try:
 					requested_user = User.objects.get(userID = instructor_id)
@@ -633,9 +673,33 @@ def instructors(request, instructor_id = ''):
 					return HttpResponseRedirect(reverse('GMS:instructors'))
 				else:
 					requested_instructor = Instructor.objects.get(user = requested_user)
-				return render(request, 'GMS/admin/instructors.html', { 'user' : user, 'instructor' : requested_instructor, 'edit' : True })
+				return render(request, 'GMS/admin/instructors.html', { 'user' : user, 'instructor' : requested_instructor, 'edit' : True, 'curr_tab' : 'instructors' })
 		else:
 			return HttpResponseRedirect(reverse('GMS:home'))
+	else:
+		return HttpResponseRedirect(reverse('GMS:login'))
+
+
+def viewInstructor(request, instructor_id):
+	if "loggedinuserid" in request.session:
+		user = User.objects.get(userID = request.session['loggedinuserid'])
+		if user.role != 2:
+			return HttpResponseRedirect(reverse('GMS:home'))
+		try:
+			requested_user = User.objects.get(userID = instructor_id)
+		except(KeyError, User.DoesNotExist):
+			return HttpResponseRedirect(reverse('GMS:home'))
+		else:
+			try:
+				instructor = Instructor.objects.get(user = requested_user)
+			except(KeyError, Instructor.DoesNotExist):
+				return HttpResponseRedirect(reverse('GMS:home'))
+
+		courses = instructor.course_set.all()
+		return render(request, 'GMS/admin/viewInstructor.html', { 'user' : user,
+															   	  'instructor' : instructor,
+															   	  'courses' : courses,
+															   	  'curr_tab' : 'instructors' })
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
@@ -643,6 +707,8 @@ def instructors(request, instructor_id = ''):
 def addInstructor(request):
 	if "loggedinuserid" in request.session:
 		user = User.objects.get(userID = request.session['loggedinuserid'])
+		if user.role != 2:
+			return HttpResponseRedirect(reverse('GMS:home'))
 		if request.method == "POST":
 			name = request.POST.get('name', '')
 			userid = request.POST.get('userid', '')
@@ -674,7 +740,7 @@ def addInstructor(request):
 			if c == None:
 				c = {}
 
-			c.update({'user' : user, 'instructor' : ins})
+			c.update({'user' : user, 'instructor' : ins, 'curr_tab' : 'instructors'})
 			try:
 				new_user = User.objects.get(userID = userid)
 			except (KeyError, User.DoesNotExist):
@@ -688,12 +754,12 @@ def addInstructor(request):
 				new_instructor.save()
 
 				allInstructors = Instructor.objects.all().order_by('user_id')
-				return render(request, 'GMS/admin/instructors.html', {'user' : user, 'allInstructors' : allInstructors, 'edit' : False, 'success_msg' : "The user with userid = '%s' was added successfully." % userid})
+				return render(request, 'GMS/admin/instructors.html', {'user' : user, 'allInstructors' : allInstructors, 'edit' : False, 'success_msg' : "The user with userid = '%s' was added successfully." % userid, 'curr_tab' : 'instructors'})
 			else:
 				c.update({'err_msg' : "ID %s already exists." % userid})
 				return render(request, 'GMS/admin/addInstructor.html', c)
 
-		return render(request, 'GMS/admin/addInstructor.html', {'user' : user})
+		return render(request, 'GMS/admin/addInstructor.html', {'user' : user, 'curr_tab' : 'instructors'})
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
@@ -712,7 +778,7 @@ def deleteInstructor(request, instructor_id):
 				requested_user.delete()
 
 				allInstructors = Instructor.objects.all().order_by('user_id')
-				return render(request, 'GMS/admin/instructors.html', {'user' : user, 'allInstructors' : allInstructors, 'edit' : False, 'success_msg' : "The Instructor with ID = '%s' was deleted successfully." % instructor_id})
+				return render(request, 'GMS/admin/instructors.html', {'user' : user, 'allInstructors' : allInstructors, 'edit' : False, 'success_msg' : "The Instructor with ID = '%s' was deleted successfully." % instructor_id, 'curr_tab' : 'instructors'})
 		else:
 			return HttpResponseRedirect(reverse('GMS:home'))
 	else:
@@ -746,6 +812,8 @@ def courses(request, course_id=''):
 
 				if c == None:
 					c = {}
+
+				c.update({'curr_tab' : 'courses'})
 
 				if name != '' and courseid != '' and LTP != '' and credit != '' and courseType != '' and Iuserid != '':
 
@@ -784,7 +852,7 @@ def courses(request, course_id=''):
 
 			if course_id == '':
 				allCourses = Course.objects.all().extra(select = {'lower_name' : 'lower(name)'}).order_by('lower_name')
-				return render(request, 'GMS/admin/courses.html', { 'user' : user, 'allCourses' : allCourses, 'edit' : False })
+				return render(request, 'GMS/admin/courses.html', { 'user' : user, 'allCourses' : allCourses, 'edit' : False, 'curr_tab' : 'courses' })
 			else:
 				try:
 					requested_course = Course.objects.get(courseID = course_id)
@@ -794,7 +862,8 @@ def courses(request, course_id=''):
 				return render(request, 'GMS/admin/courses.html', { 'user' : user, 
 																   'course' : requested_course, 
 																   'allInstructors' : allInstructors, 
-																   'edit' : True })
+																   'edit' : True,
+																   'curr_tab' : 'courses' })
 		else:
 			return HttpResponseRedirect(reverse('GMS:home'))
 	else:
@@ -817,7 +886,7 @@ def addCourse(request):
 
 			if c == None:
 				c = {}
-			c.update({'user' : user})
+			c.update({'user' : user, 'curr_tab' : 'courses'})
 			try:
 				inst = Instructor.objects.get(user=User.objects.get(userID=Iuserid))
 			except (KeyError, Instructor.DoesNotExist):
@@ -842,7 +911,7 @@ def addCourse(request):
 					return render(request, 'GMS/admin/addCourse.html', c)
 
 		allInstructors = Instructor.objects.all().order_by('user_id')
-		return render(request, 'GMS/admin/addCourse.html', {'user' : user, 'allInstructors' : allInstructors})
+		return render(request, 'GMS/admin/addCourse.html', {'user' : user, 'allInstructors' : allInstructors, 'curr_tab' : 'courses'})
 	else:
 		return HttpResponseRedirect(reverse('GMS:login'))
 
@@ -859,7 +928,7 @@ def deleteCourse(request, course_id):
 				requested_course.delete()
 
 				allCourses = Course.objects.all().extra(select = {'lower_name' : 'lower(name)'}).order_by('lower_name')
-				return render(request, 'GMS/admin/courses.html', {'user' : user, 'allCourses' : allCourses, 'edit' : False, 'success_msg' : "The Course with courseID = '%s' was deleted successfully." % course_id})
+				return render(request, 'GMS/admin/courses.html', {'user' : user, 'allCourses' : allCourses, 'edit' : False, 'success_msg' : "The Course with courseID = '%s' was deleted successfully." % course_id, 'curr_tab' : 'courses'})
 		else:
 			return HttpResponseRedirect(reverse('GMS:home'))
 	else:

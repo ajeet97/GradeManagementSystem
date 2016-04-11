@@ -20,7 +20,7 @@ class User(models.Model):
 
 class Instructor(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-	department = models.CharField(max_length=20)
+	department = models.CharField(max_length=30)
 
 	def __str__(self):
 		return self.user.name + " [" + self.user.userID + "]"
