@@ -1,0 +1,94 @@
+{% extends 'GMS/admin/home.html' %}
+
+{% block content %}
+<style type="text/css">
+	.prompt_del_modal{
+		width:300px;
+	}
+</style>
+<h5>View Student [{{student.user.userID}}]...</h5>
+<br>
+<div class="row">
+	<div class="col s12">
+		<table>
+			<tr>
+				<td><b>Name :</b></td>
+				<td>{{student.user.name}}</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td><b>Roll No. :</b></td>
+				<td>{{student.user.userID}}</td>
+			</tr>
+			<tr>
+				<td><b>Email :</b></td>
+				<td>{{student.user.email}}</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td><b>Contact :</b></td>
+				<td>{{student.user.contact}}</td>
+			</tr>
+			<tr>
+				<td><b>Batch :</b></td>
+				{% if student.batch == 0 %}
+					<td>UG</td>
+				{% else %}
+					<td>PG</td>
+				{% endif %}
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td><b>Year :</b></td>
+				<td>{{student.year}}</td>
+			</tr>
+			<tr>
+				<td colspan="7">
+					<b>Registered Courses : </b>
+				</td>
+			</tr>
+			{% if reg_courses|length %}
+				{% for c in reg_courses %}
+					<tr>
+						<td colspan="7">
+							{{forloop.counter}})&nbsp;&nbsp;{{c.courseID}}&nbsp;&nbsp;-&nbsp;&nbsp;{{c.name}}
+						</td>
+					</tr>
+				{% endfor %}
+			{% else %}
+				<tr>
+					<td colspan="7" style="text-align:center;">
+						<font color="#e57373">No course is registered.</b>
+					</td>
+				</tr>
+			{% endif %}
+			<tr>
+				<td colspan="7">
+					<a href="../" class="waves-effect waves-light yellow darken-3 btn">Edit<span class="right"><i class="material-icons">mode_edit</i></span></a>
+					<span>
+						<!-- Modal Trigger -->
+						<a href="#delete" class="modal-trigger waves-effect waves-light red darken-3 btn">Delete<span class="right"><i class="material-icons">delete</i></span></a>
+
+						<!-- Modal Structure -->
+						<div id="delete" class="modal prompt_del_modal">
+							<div class="modal-content">
+								<h4>Are you sure?</h4>
+							</div>
+							<div class="modal-footer">
+								<button class="modal-action modal-close waves-effect waves-red btn-flat">No</button>
+								<a href="../delete" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+							</div>
+						</div>
+					</span>
+				</td>
+			</tr>
+
+			<script>
+				$(document).ready(function(){
+					$('.modal-trigger').leanModal();
+				});
+			</script>
+		</table>
+	</div>
+</div>
+{% endblock %}
