@@ -359,6 +359,10 @@ def students(request, student_id=''):
 									c1.save()
 								courses_to_be_reg.append(c1)
 
+						if courses_to_be_reg.__len__() > 8:
+							c.update({'edit' : True, 'user' : user, 'student' : std, 'allCourses' : allCourses, 'p_reg_courses' : courses_to_be_reg, 'err_msg' : "You can register maximum 8 courses.", 'curr_tab' : 'students'})
+							return render(request, 'GMS/admin/students.html', c)
+
 						p_student.branch = branch
 						p_student.batch = batch
 						p_student.year = year
@@ -525,18 +529,22 @@ def addStudent(request):
 				if newPassword != cnfPassword:
 					c.update({'err_msg' : "Password does not match."})
 					return render(request, 'GMS/admin/addStudent.html', c)
-				new_user = User(userID = userid, password = newPassword, name = name, email = email, contact = contact, role = 0)
-				new_user.save()
-
-				new_student = Student(user = new_user, branch = branch, batch = batch, year = year)
-				new_student.save()
-				
 
 				for c1 in allCourses:
 					if request.POST.get(c1.courseID, ''):
 						c1.gradesUploaded = False
 						c1.save()
 						courses_to_be_reg.append(c1)
+
+				if courses_to_be_reg.__len__() > 8:
+					c.update({'err_msg' : 'You can register maximum 8 courses.', 'courses_to_be_reg' : courses_to_be_reg});
+					return render(request, 'GMS/admin/addStudent.html', c);
+
+				new_user = User(userID = userid, password = newPassword, name = name, email = email, contact = contact, role = 0)
+				new_user.save()
+
+				new_student = Student(user = new_user, branch = branch, batch = batch, year = year)
+				new_student.save()
 
 				new_student.allCourses = courses_to_be_reg
 				new_student.save()
